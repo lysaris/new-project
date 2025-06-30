@@ -1,42 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Log In – DANN</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
-  <style>
-    html, body { font-family: 'Poppins', sans-serif; }
-    .gradient-text {
-      background: linear-gradient(90deg, #001F54 0%, #FF7F11 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .eye-icon {
-      cursor: pointer;
-      position: absolute;
-      right: 1rem;
-      top: 2.5rem;
-      transform: translateY(-50%);
-      color: #aaa;
-      transition: color 0.2s;
-      z-index: 2;
-      background: transparent;
-      padding: 0;
-      line-height: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .eye-icon:hover {
-      color: #FF7F11;
-    }
-  </style>
-</head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Log In – DANN</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <!-- Firebase scripts removed -->
+    <!-- <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="firebase-config.js"></script> -->
+    <style>
+      html, body { font-family: 'Poppins', sans-serif; }
+      .gradient-text {
+        background: linear-gradient(90deg, #001F54 0%, #FF7F11 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .eye-icon {
+        cursor: pointer;
+        position: absolute;
+        right: 1rem;
+        top: 2.5rem;
+        transform: translateY(-50%);
+        color: #aaa;
+        transition: color 0.2s;
+        z-index: 2;
+        background: transparent;
+        padding: 0;
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .eye-icon:hover {
+        color: #FF7F11;
+      }
+    </style>
+  </head>
 <body class="bg-gradient-to-br from-blue-50 via-white to-orange-50 text-gray-900 min-h-screen">
   <!-- Navigation -->
   <nav class="bg-white shadow-sm">
@@ -91,15 +95,6 @@
     <div class="bg-white rounded-2xl shadow-lg max-w-md w-full p-8 mx-2">
       <h2 class="text-3xl font-bold mb-3 gradient-text text-center">Log In</h2>
       <form id="loginForm" class="space-y-5" autocomplete="off" novalidate>
-        <div id="twoFaSection" class="hidden mb-3">
-          <label for="twoFaCode" class="block font-semibold mb-1">2FA Code (e-mail)</label>
-          <div class="flex gap-2 items-center">
-            <input type="text" id="twoFaCode" inputmode="numeric" pattern="\d{6}" maxlength="6" autocomplete="off"
-              class="w-32 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 text-center font-mono" placeholder="123456" />
-            <button type="button" id="verifyTwoFa" class="bg-orange-600 hover:bg-orange-700 text-white font-semibold px-4 py-2 rounded-lg transition">Verify Code</button>
-            <span id="twoFaVerified" class="ml-2 text-green-600 text-sm font-semibold hidden">✅ 2FA verified</span>
-          </div>
-        </div>
         <div>
           <label for="identifier" class="block font-semibold mb-1">Username / Email</label>
           <input type="text" id="identifier" name="identifier" required
@@ -145,7 +140,7 @@
   <script src="auth.js"></script>
   <script>
     // Password visibility utility (press-and-hold)
-    (function() {
+    (function () {
       const loginPasswordInput = document.getElementById('loginPassword');
       const toggleLoginPassword = document.getElementById('toggleLoginPassword');
       const loginEyeIcon = document.getElementById('loginEyeIcon');
@@ -172,72 +167,22 @@
       toggleLoginPassword.addEventListener('touchcancel', e => { if (eyeActive) { hide(); eyeActive = false; } });
     })();
 
-    // ------------- LOGIN / 2FA LOGIC -------------
-    const identifierInput = document.getElementById('identifier');
+    // ------------- LOGIN LOGIC (Firebase) -------------
     const loginForm = document.getElementById('loginForm');
-    const twoFaSection   = document.getElementById('twoFaSection');
-    const signInBtn      = document.getElementById('signInBtn');
-    const verifyTwoFa    = document.getElementById('verifyTwoFa');
-    const twoFaCode      = document.getElementById('twoFaCode');
-    const twoFaVerified  = document.getElementById('twoFaVerified');
-
-    function show2FA() {
-      twoFaSection.classList.remove('hidden');
-      signInBtn.disabled = true;
-      signInBtn.classList.add('opacity-60','cursor-not-allowed');
-      twoFaVerified.classList.add('hidden');
-      twoFaCode.value = '';
-    }
-    function hide2FA() {
-      twoFaSection.classList.add('hidden');
-      signInBtn.disabled = false;
-      signInBtn.classList.remove('opacity-60','cursor-not-allowed');
-      twoFaVerified.classList.add('hidden');
-      twoFaCode.value = '';
-    }
-
-    // As soon as the visitor types their username/email, decide if we need to ask for 2FA
-    identifierInput.addEventListener('blur', function(){
-      const id = this.value.trim();
-      const user = window.DANNAuth.getUsers().find(u => u.username === id || u.email === id);
-      if (user && user.enable2fa) { show2FA(); } else { hide2FA(); }
-    });
-
-    // Verify 6-digit demo code
-    verifyTwoFa.addEventListener('click', function(){
-      if (/^\d{6}$/.test(twoFaCode.value.trim())) {
-        if (twoFaCode.value.trim() === '123456') {
-          hide2FA();
-          twoFaVerified.classList.remove('hidden');
-        } else {
-          alert('Incorrect code (demo uses 123456).');
-        }
-      } else {
-        alert('Please enter the 6-digit code.');
-      }
-    });
-
-    loginForm.addEventListener('submit', function(e){
-      if (!this.checkValidity()) return; // browser handles message
+    loginForm.addEventListener('submit', async function (e) {
+      if (!this.checkValidity()) return;
       e.preventDefault();
-
-      const id   = identifierInput.value.trim();
-      const pass = document.getElementById('loginPassword').value;
-      const users = window.DANNAuth.getUsers();
-      const user = users.find(u => u.username === id || u.email === id);
-      if (!user) { alert('No such user.'); return; }
-      if (user.password !== pass) { alert('Wrong password.'); return; }
-
-      if (user.enable2fa) {
-        if (twoFaSection.classList.contains('hidden')) { alert('2FA required.'); return; }
-        if (twoFaCode.value.trim() !== '123456') { alert('Enter the correct 2FA code.'); return; }
+      const identifier = document.getElementById('identifier').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      try {
+        await window.DANNAuth.signIn({ identifier, password });
+        const redirect = localStorage.getItem('dann_prevPage') || 'index.html';
+        localStorage.removeItem('dann_prevPage');
+        window.location.href = redirect;
+      } catch (err) {
+        alert((err && err.message) || "Sign-in failed. Please try again.");
       }
-
-      window.DANNAuth.setCurrentUser({ username: user.username, email: user.email });
-      alert('✔️ Logged in!');
-      const redirect = localStorage.getItem('dann_prevPage') || 'index.html';
-      localStorage.removeItem('dann_prevPage');
-      window.location.href = redirect;
     });
+  </script>
 </body>
 </html>

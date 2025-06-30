@@ -1,42 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sign Up – DANN</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
-  <style>
-    html, body { font-family: 'Poppins', sans-serif; }
-    .gradient-text {
-      background: linear-gradient(90deg, #001F54 0%, #FF7F11 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .eye-icon {
-      cursor: pointer;
-      position: absolute;
-      right: 1rem;
-      top: 2.5rem;
-      transform: translateY(-50%);
-      color: #aaa;
-      transition: color 0.2s;
-      z-index: 2;
-      background: transparent;
-      padding: 0;
-      line-height: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .eye-icon:hover {
-      color: #FF7F11;
-    }
-  </style>
-</head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Sign Up – DANN</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <!-- Firebase scripts removed -->
+    <!-- <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="firebase-config.js"></script> -->
+    <style>
+      html, body { font-family: 'Poppins', sans-serif; }
+      .gradient-text {
+        background: linear-gradient(90deg, #001F54 0%, #FF7F11 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .eye-icon {
+        cursor: pointer;
+        position: absolute;
+        right: 1rem;
+        top: 2.5rem;
+        transform: translateY(-50%);
+        color: #aaa;
+        transition: color 0.2s;
+        z-index: 2;
+        background: transparent;
+        padding: 0;
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .eye-icon:hover {
+        color: #FF7F11;
+      }
+    </style>
+  </head>
 <body class="bg-gradient-to-br from-blue-50 via-white to-orange-50 text-gray-900 min-h-screen">
   <!-- Navigation -->
   <nav class="bg-white shadow-sm">
@@ -102,12 +106,8 @@
                  placeholder="Choose a unique username"
                  class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400" />
         </div>
-        <div class="flex items-center mb-1">
-          <input type="checkbox" id="enable2fa" name="enable2fa" class="mr-2 accent-orange-600">
-          <label for="enable2fa" class="font-semibold select-none cursor-pointer">
-            Enable 2-Factor Authentication (e-mail code)
-          </label>
-        </div>
+        <!-- 2FA removed (leave comment) -->
+        <!-- 2FA option is not available in local auth. -->
         <div class="relative">
           <label for="password" class="block font-semibold mb-1">Password</label>
           <input
@@ -128,7 +128,7 @@
               <path id="eyeOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
               <path id="eyeOpen2" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268-2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
             </svg>
           </span>
         </div>
@@ -155,7 +155,7 @@
   <script src="auth.js"></script>
   <script>
     // Password visibility utility (press-and-hold)
-    (function() {
+    (function () {
       const passwordInput = document.getElementById('password');
       const togglePassword = document.getElementById('togglePassword');
       const eyeIcon = document.getElementById('eyeIcon');
@@ -182,37 +182,24 @@
       togglePassword.addEventListener('touchcancel', e => { if (eyeActive) { hide(); eyeActive = false; } });
     })();
 
-    // ------------- SIGN-UP LOGIC -------------
+    // ------------- SIGN-UP LOGIC (Firebase) -------------
     const signupForm = document.getElementById('signupForm');
-    signupForm.addEventListener('submit', function (e) {
-      if (!this.checkValidity()) return; // let browser report
+    signupForm.addEventListener('submit', async function (e) {
+      if (!this.checkValidity()) return;
       e.preventDefault();
-
       const email = document.getElementById('email').value.trim();
       const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value;
-      const enable2fa = document.getElementById('enable2fa').checked;
-
-      const users = window.DANNAuth.getUsers();
-      const duplicate = users.find(u => u.username === username || u.email === email);
-      if (duplicate) {
-        alert('🚫 Username or e-mail already exists.');
-        return;
+      try {
+        await window.DANNAuth.signUp({ email, password, username });
+        alert("✔️ Account created successfully.");
+        const redirect = localStorage.getItem('dann_prevPage') || 'index.html';
+        localStorage.removeItem('dann_prevPage');
+        window.location.href = redirect;
+      } catch (err) {
+        alert((err && err.message) || "Sign-up failed. Please try again.");
       }
-
-      users.push({ email, username, password, enable2fa });
-      window.DANNAuth.saveUsers(users);
-      window.DANNAuth.setCurrentUser({ username, email });
-
-      if (enable2fa) {
-        alert('✔️ Sign-up successful – a verification code has been e-mailed to you (demo only).');
-      } else {
-        alert('✔️ Account created successfully.');
-      }
-
-      const redirect = localStorage.getItem('dann_prevPage') || 'index.html';
-      localStorage.removeItem('dann_prevPage');
-      window.location.href = redirect;
     });
+  </script>
 </body>
 </html>
