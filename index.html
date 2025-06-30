@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Welcome to Your New Website</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    html, body { font-family: 'Inter', sans-serif; }
+    .gradient-text {
+      background: linear-gradient(90deg, #3b82f6 0%, #a855f7 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+  <!-- Navigation -->
+  <nav class="bg-white shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+      <span class="text-2xl font-bold gradient-text">MyWebsite</span>
+      <ul class="flex space-x-6 font-semibold text-gray-600">
+        <li><a href="#" class="hover:text-blue-600">Home</a></li>
+        <li><a href="#" class="hover:text-blue-600">About</a></li>
+        <li><a href="#" class="hover:text-blue-600">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="max-w-4xl mx-auto px-4 py-24 flex flex-col items-center text-center">
+    <h1 class="text-5xl md:text-6xl font-extrabold mb-6 gradient-text animate-fade-in">
+      Welcome!
+    </h1>
+    <p class="text-xl md:text-2xl text-gray-700 mb-8 max-w-2xl">
+      This is your new website. You can customize and expand it however you like. Get started by editing the content and layout!
+    </p>
+    <a href="#" class="inline-block bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold text-lg shadow-lg hover:bg-blue-700 transition">
+      Get Started
+    </a>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t mt-20">
+    <div class="max-w-6xl mx-auto px-4 py-8 text-center text-gray-500 text-sm">
+      &copy; 2024 MyWebsite. All rights reserved.
+    </div>
+  </footer>
+</body>
+</html>
