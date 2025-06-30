@@ -89,6 +89,12 @@
       <div class="text-xs text-gray-500 mt-2 text-center">
         Map &copy; <a href="https://leafletjs.com/" class="underline hover:text-purple-700" target="_blank">Leaflet</a> | &copy; <a href="https://www.openstreetmap.org/copyright" class="underline hover:text-purple-700" target="_blank">OpenStreetMap contributors</a>
       </div>
+      <!-- REPLAY CONTROLS UI -->
+      <div id="replayCtrl" class="mt-4 flex items-center gap-2 justify-center text-sm">
+        <label for="replaySelect" class="font-semibold">Replay:</label>
+        <select id="replaySelect" class="border rounded px-2 py-1"></select>
+        <button id="playReplay" class="bg-purple-600 text-white px-3 py-1 rounded hover:bg-purple-700">▶ Play</button>
+      </div>
     </div>
   </section>
 
@@ -152,6 +158,14 @@
 
     // ---- Live Updates Implementation ----
 
+    // DATA STRUCTURES for history and trailing polylines
+    const userHistory = []; // {lat, lng, time}
+    const friendHistories = friends.map(f =>
+      [{ lat: f.loc[0], lng: f.loc[1], time: Date.now() }]
+    );
+    let userPolyline = null;
+    const friendPolylines = [];
+
     // User location live update globals
     let userMarker = null;
     let firstUserFix = true;
@@ -167,13 +181,29 @@
         friends[i].loc[0] += dLat;
         friends[i].loc[1] += dLng;
         markers[i].setLatLng(friends[i].loc);
+
+        // ---- Friend history and polyline trail ----
+        const now = Date.now();
+        friendHistories[i].push({ lat: friends[i].loc[0], lng: friends[i].loc[1], time: now });
+        if (friendPolylines[i]) {
+          friendPolylines[i].addLatLng(friends[i].loc);
+        }
       }
     }
     setInterval(updateFriends, 1000);
 
+    // -- ENHANCED: Add polylines for friends at creation
+    // (after markers are created, but before user code)
+    // (friendPolylines and friendHistories already initialized above)
+    friends.forEach((friend, idx) => {
+      const pl = L.polyline([friend.loc], { color: '#3b82f6', weight: 3, opacity: 0.4 }).addTo(map);
+      friendPolylines.push(pl);
+    });
+
     // -- User location live updates --
     function handleUserPosition(pos) {
       const { latitude, longitude } = pos.coords;
+      const now = Date.now();
       if (!userMarker) {
         userMarker = L.marker([latitude, longitude], { icon: userIcon }).addTo(map)
           .bindPopup("<b>You</b>");
@@ -187,8 +217,13 @@
           map.fitBounds(bounds, { padding: [40, 40] });
           firstUserFix = false;
         }
+        // Start user polyline
+        userHistory.push({ lat: latitude, lng: longitude, time: now });
+        userPolyline = L.polyline([[latitude, longitude]], { color: 'violet', weight: 3, opacity: 0.6 }).addTo(map);
       } else {
         userMarker.setLatLng([latitude, longitude]);
+        userHistory.push({ lat: latitude, lng: longitude, time: now });
+        if (userPolyline) userPolyline.addLatLng([latitude, longitude]);
       }
       // Don't auto-open the popup after first time
     }
@@ -216,7 +251,81 @@
     } else {
       map.setView([0, 0], 2);
     }
-  </script>
-  <script src="auth.js"></script>
+
+    // ----- REPLAY FEATURE -----
+
+    // 1. Populate replay select
+    function populateReplaySelect() {
+      const sel = document.getElementById('replaySelect');
+      sel.innerHTML = '';
+      const userOpt = document.createElement('option');
+      userOpt.value = 'user';
+      userOpt.textContent = 'You';
+      sel.appendChild(userOpt);
+      friends.forEach((f, idx) => {
+        const opt = document.createElement('option');
+        opt.value = idx;
+        opt.textContent = f.name;
+        sel.appendChild(opt);
+      });
+    }
+    populateReplaySelect();
+
+    // 2. Replay logic
+    let replayIntervalId = null;
+
+    function startReplay(target) {
+      // Prevent concurrent replays
+      if (replayIntervalId) {
+        clearInterval(replayIntervalId);
+        replayIntervalId = null;
+      }
+
+      let history;
+      let icon;
+      if (target === 'user') {
+        history = userHistory;
+        icon = userIcon;
+      } else {
+        history = friendHistories[target];
+        icon = friendIcon;
+      }
+      if (!history || history.length < 2) {
+        alert("Not enough history yet");
+        return;
+      }
+
+      // Playback: draw marker, fit bounds, animate along history
+      const playbackMarker = L.marker([history[0].lat, history[0].lng], { icon: icon }).addTo(map);
+
+      // Fit bounds to the entity's polyline trail for context
+      const polyCoords = history.map(pt => [pt.lat, pt.lng]);
+      const poly = L.polyline(polyCoords);
+      map.fitBounds(poly.getBounds(), { padding: [40, 40] });
+
+      let i = 1;
+      replayIntervalId = setInterval(() => {
+        if (i < history.length) {
+          playbackMarker.setLatLng([history[i].lat, history[i].lng]);
+          i++;
+        } else {
+          playbackMarker.remove();
+          clearInterval(replayIntervalId);
+          replayIntervalId = null;
+        }
+      }, 500);
+    }
+
+    document.getElementById('playReplay').onclick = function() {
+      const sel = document.getElementById('replaySelect');
+      const val = sel.value;
+      if (replayIntervalId) { clearInterval(replayIntervalId); replayIntervalId = null; }
+      startReplay(val === 'user' ? 'user' : parseInt(val));
+    };
+
+    // Optionally: prevent multiple replays by disabling button during playback (not required, but helps UX)
+    // Not implemented as per instructions to keep all live updates unchanged.
+
+    // All live-update logic above remains unchanged; new features appended.
 </body>
 </html>
