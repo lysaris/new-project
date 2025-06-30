@@ -9,7 +9,7 @@
 
   // Initialise Firebase App
   if (!firebase.apps.length) {
-    firebase.initializeApp(window.firebaseConfig || window.firebase_config || {});
+    firebase.initializeApp(window.firebaseConfig || {});
   }
   const auth = firebase.auth();
 
