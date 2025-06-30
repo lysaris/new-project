@@ -34,14 +34,63 @@
     localStorage.setItem(USERS_KEY, JSON.stringify(users));
   }
 
-  // Set/Get current user in storage
-  function setCurrentUser(user) {
-    if (user) localStorage.setItem(CURR_KEY, JSON.stringify({ email: user.email, username: user.username }));
-    else localStorage.removeItem(CURR_KEY);
+  // --- Cookie helpers ---
+  function setCookie(name, val, days) {
+    let expires = "";
+    if (typeof days === "number" && days > 0) {
+      const d = new Date();
+      d.setTime(d.getTime() + days * 24 * 60 * 60 * 1000);
+      expires = "; expires=" + d.toUTCString();
+    }
+    document.cookie = name + "=" + encodeURIComponent(val) + expires + "; path=/";
+  }
+  function getCookie(name) {
+    const nameEQ = name + "=";
+    const ca = document.cookie.split(';');
+    for (let c of ca) {
+      while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+      if (c.indexOf(nameEQ) === 0) return decodeURIComponent(c.substring(nameEQ.length, c.length));
+    }
+    return null;
+  }
+  function deleteCookie(name) {
+    document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  }
+
+  // Set/Get current user in storage and cookie
+  // setCurrentUser(user, rememberDays): user=null signs out; rememberDays=null sets session cookie, else days (default 30)
+  function setCurrentUser(user, rememberDays = 30) {
+    if (user) {
+      const userObj = { email: user.email, username: user.username };
+      localStorage.setItem(CURR_KEY, JSON.stringify(userObj));
+      // If rememberDays is null/false/0, set session cookie (no expiry), else set with expiry
+      if (rememberDays == null) {
+        setCookie('dann_user', JSON.stringify(userObj));
+      } else {
+        setCookie('dann_user', JSON.stringify(userObj), rememberDays);
+      }
+    } else {
+      localStorage.removeItem(CURR_KEY);
+      deleteCookie('dann_user');
+    }
     changeHandlers.forEach(h => { try { h(DANNAuth.currentUser()); } catch {} });
   }
   function getCurrentUser() {
-    try { return JSON.parse(localStorage.getItem(CURR_KEY)) || null; } catch { return null; }
+    try {
+      const local = localStorage.getItem(CURR_KEY);
+      if (local) return JSON.parse(local);
+    } catch {}
+    // Fallback to cookie if not in localStorage
+    try {
+      const c = getCookie('dann_user');
+      if (c) {
+        const user = JSON.parse(c);
+        // copy into localStorage for seamless session
+        localStorage.setItem(CURR_KEY, JSON.stringify(user));
+        return user;
+      }
+    } catch {}
+    return null;
   }
 
   // Sign Up
@@ -51,7 +100,7 @@
     if (!email || !username || !password) throw new Error("All fields required.");
     if (!/^[\w.+-]+@\w+\.\w+/.test(email)) throw new Error("Invalid email.");
     if (username.length < 3) throw new Error("Username too short.");
-    if (password.length < 2 || password.length > 8) throw new Error("Password must be 2-8 chars.");
+    if (password.length < 4 || password.length > 32) throw new Error("Password must be 4-32 characters.");
     let users = getUsers();
     if (users.some(u => u.email === email)) throw new Error("Email already registered.");
     if (users.some(u => u.username.toLowerCase() === username.toLowerCase())) throw new Error("Username already taken.");
@@ -63,7 +112,8 @@
   }
 
   // Sign In
-  async function signIn({ identifier, password }) {
+  // Accepts optional boolean "remember" (default true): sets 30-day cookie if true, session cookie if false.
+  async function signIn({ identifier, password, remember = true }) {
     identifier = (identifier || "").trim();
     if (!identifier || !password) throw new Error("All fields required.");
     let users = getUsers();
@@ -74,7 +124,7 @@
     if (!user) throw new Error("User not found.");
     const hash = await hashPassword(user.salt, password);
     if (hash !== user.hash) throw new Error("Incorrect password.");
-    setCurrentUser({ email: user.email, username: user.username });
+    setCurrentUser({ email: user.email, username: user.username }, remember ? 30 : null);
   }
 
   // Sign Out

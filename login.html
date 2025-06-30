@@ -120,6 +120,10 @@
             </svg>
           </span>
         </div>
+        <div class="flex items-center space-x-2 mb-2">
+          <input type="checkbox" id="rememberCb" name="remember" class="accent-orange-600" checked>
+          <label for="rememberCb" class="text-sm select-none">Remember me</label>
+        </div>
         <button type="submit"
                 id="signInBtn"
                 class="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2 rounded-lg shadow transition">
@@ -174,8 +178,9 @@
       e.preventDefault();
       const identifier = document.getElementById('identifier').value.trim();
       const password = document.getElementById('loginPassword').value;
+      const remember = document.getElementById('rememberCb').checked;
       try {
-        await window.DANNAuth.signIn({ identifier, password });
+        await window.DANNAuth.signIn({ identifier, password, remember });
         const redirect = localStorage.getItem('dann_prevPage') || 'index.html';
         localStorage.removeItem('dann_prevPage');
         window.location.href = redirect;
