@@ -150,24 +150,69 @@
       shadowSize: [41, 41]
     });
 
-    // Try geolocation
+    // ---- Live Updates Implementation ----
+
+    // User location live update globals
     let userMarker = null;
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        function(pos) {
-          const { latitude, longitude } = pos.coords;
-          if (userMarker) map.removeLayer(userMarker);
-          userMarker = L.marker([latitude, longitude], { icon: userIcon }).addTo(map)
-            .bindPopup("<b>You</b>").openPopup();
-          // Fit map to show user and friends
+    let firstUserFix = true;
+    let watchId = null;
+    let userPopupOpened = false; // To only open popup first time
+
+    // -- Friend marker movement --
+    function updateFriends() {
+      for (let i = 0; i < friends.length; i++) {
+        // Random lat/lng jitter ±0.0004 deg
+        let dLat = (Math.random() - 0.5) * 0.0008;
+        let dLng = (Math.random() - 0.5) * 0.0008;
+        friends[i].loc[0] += dLat;
+        friends[i].loc[1] += dLng;
+        markers[i].setLatLng(friends[i].loc);
+      }
+    }
+    setInterval(updateFriends, 1000);
+
+    // -- User location live updates --
+    function handleUserPosition(pos) {
+      const { latitude, longitude } = pos.coords;
+      if (!userMarker) {
+        userMarker = L.marker([latitude, longitude], { icon: userIcon }).addTo(map)
+          .bindPopup("<b>You</b>");
+        if (!userPopupOpened) {
+          userMarker.openPopup();
+          userPopupOpened = true;
+        }
+        // Fit map to show user and friends only once at first fix
+        if (firstUserFix) {
           const bounds = L.latLngBounds([[latitude, longitude], ...friends.map(f => f.loc)]);
           map.fitBounds(bounds, { padding: [40, 40] });
-        },
-        function(err) {
-          map.setView([0, 0], 2);
-          L.popup().setLatLng([0, 0]).setContent("Location permission denied. Showing world view.").openOn(map);
+          firstUserFix = false;
         }
-      );
+      } else {
+        userMarker.setLatLng([latitude, longitude]);
+      }
+      // Don't auto-open the popup after first time
+    }
+
+    function handleUserError(err) {
+      map.setView([0, 0], 2);
+      L.popup().setLatLng([0, 0]).setContent("Location permission denied. Showing world view.").openOn(map);
+      // (fitBounds removed as per instructions)
+    }
+
+    // Prefer watchPosition if available
+    if (navigator.geolocation) {
+      if (navigator.geolocation.watchPosition) {
+        watchId = navigator.geolocation.watchPosition(
+          handleUserPosition,
+          handleUserError,
+          { enableHighAccuracy: true, maximumAge: 1000, timeout: 10000 }
+        );
+      } else {
+        // Fallback: poll getCurrentPosition every 1s
+        setInterval(() => {
+          navigator.geolocation.getCurrentPosition(handleUserPosition, handleUserError, { enableHighAccuracy: true });
+        }, 1000);
+      }
     } else {
       map.setView([0, 0], 2);
     }
