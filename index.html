@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Welcome to Your New Website</title>
+  <title>DANN</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <style>
-    html, body { font-family: 'Inter', sans-serif; }
+    html, body { font-family: 'Poppins', sans-serif; }
     .gradient-text {
-      background: linear-gradient(90deg, #3b82f6 0%, #a855f7 100%);
+      background: linear-gradient(90deg, #001F54 0%, #FF7F11 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -58,19 +58,54 @@
     }
   </style>
 </head>
-<body class="bg-gray-50 text-gray-900">
+<body class="bg-gradient-to-br from-blue-50 via-white to-orange-50 text-gray-900 min-h-screen">
   <!-- Navigation -->
   <nav class="bg-white shadow-sm">
     <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-      <span class="text-2xl font-bold gradient-text">MyWebsite</span>
+      <a href="index.html" class="text-2xl font-bold gradient-text">DANN</a>
       <ul class="flex space-x-6 font-semibold text-gray-600">
-        <li><a href="#" class="hover:text-blue-600">Home</a></li>
-        <li><a href="#" class="hover:text-blue-600">About</a></li>
-        <li><a href="#" class="hover:text-blue-600">Contact</a></li>
+        <!-- Home Dropdown -->
+        <li class="relative group">
+          <a href="index.html" class="hover:text-orange-600 flex items-center">Home
+            <svg class="ml-1 w-3 h-3 text-gray-400 group-hover:text-orange-600 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 12 12"><path d="M3 5l3 3 3-3"/></svg>
+          </a>
+          <ul class="absolute right-0 top-full w-48 rounded-lg shadow-lg border bg-white z-50 hidden group-hover:block transition">
+            <li>
+              <a href="biography.html" class="block px-5 py-2 text-gray-600 hover:bg-orange-50 hover:text-orange-600 rounded-t-lg transition">Biography</a>
+            </li>
+            <li>
+              <a href="portfolio.html" class="block px-5 py-2 text-gray-600 hover:bg-orange-50 hover:text-orange-600 transition">Portfolio</a>
+            </li>
+            <li>
+              <a href="donate.html" class="block px-5 py-2 text-gray-600 hover:bg-orange-50 hover:text-orange-600 rounded-b-lg transition">Donate</a>
+            </li>
+          </ul>
+        </li>
+        <!-- About Dropdown -->
+        <li class="relative group">
+          <a href="about.html" class="hover:text-orange-600 flex items-center">About
+            <svg class="ml-1 w-3 h-3 text-gray-400 group-hover:text-orange-600 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 12 12"><path d="M3 5l3 3 3-3"/></svg>
+          </a>
+          <ul class="absolute right-0 top-full w-40 rounded-lg shadow-lg border bg-white z-50 hidden group-hover:block transition">
+            <li>
+              <a href="creator.html" class="block px-5 py-2 text-gray-600 hover:bg-orange-50 hover:text-orange-600 rounded-t-lg transition">Creator</a>
+            </li>
+            <li>
+              <a href="cosine.html" class="block px-5 py-2 text-gray-600 hover:bg-orange-50 hover:text-orange-600 rounded-b-lg transition">Cosine</a>
+            </li>
+          </ul>
+        </li>
+        <!-- Contact (no dropdown) -->
+        <li>
+          <a href="contact.html" class="hover:text-orange-600">Contact</a>
+        </li>
+        <!-- Sign Up (new) -->
+        <li>
+          <a href="signup.html" class="hover:text-orange-600">Sign Up</a>
+        </li>
       </ul>
     </div>
   </nav>
-
   <!-- Login Modal -->
   <div id="loginModal" class="fixed inset-0 flex items-center justify-center bg-black/30 z-30">
     <div class="bg-white rounded-2xl shadow-lg w-full max-w-md p-8 relative">
@@ -96,14 +131,17 @@
 
   <!-- Hero Section: Only visible after login -->
   <section id="homeSection" class="max-w-4xl mx-auto px-4 py-24 flex flex-col items-center text-center hidden">
+    <!-- …your hero content here… -->
+  </section>
+
     <h1 class="text-5xl md:text-6xl font-extrabold mb-6 gradient-text animate-fade-in">
-      Welcome!
+      Hey
     </h1>
     <p class="text-xl md:text-2xl text-gray-700 mb-8 max-w-2xl">
-      This is your new website. You can customize and expand it however you like. Get started by editing the content and layout!
+      Welcome to my website! This was made by ARIS with the help of Cosine. Press GO to explore my page!
     </p>
-    <a href="#" class="inline-block bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold text-lg shadow-lg hover:bg-blue-700 transition">
-      Get Started
+    <a href="location.html" class="inline-block bg-orange-600 text-white px-8 py-4 rounded-lg font-semibold text-lg shadow-lg hover:bg-orange-700 transition">
+      GO
     </a>
   </section>
 
@@ -121,10 +159,9 @@
   <!-- Footer -->
   <footer class="bg-white border-t mt-20">
     <div class="max-w-6xl mx-auto px-4 py-8 text-center text-gray-500 text-sm">
-      &copy; 2024 MyWebsite. All rights reserved.
+      &copy; 2025 DANN. All rights reserved.
     </div>
   </footer>
-
   <script>
     // --- Password Eye Icon Show/Hide Logic ---
     const passwordInput = document.getElementById('password');
@@ -205,87 +242,51 @@
     function randomBetween(a, b) {
       return a + Math.random() * (b - a);
     }
-    // Example dummy names
-    const dummyNames = [
-      "Alice", "Bob", "Charlie", "Diana", "Eve", "Frank", "Grace", "Heidi", "Ivan", "Judy",
-      "Karl", "Liam", "Mallory", "Niaj", "Olivia", "Peggy", "Quinn", "Rob", "Sybil", "Trudy"
-    ];
-    // Some plausible locations (lat, lon) for more variety
+    const dummyNames = ["Alice","Bob","Charlie","Diana","Eve","Frank","Grace","Heidi","Ivan","Judy","Karl","Liam","Mallory","Niaj","Olivia","Peggy","Quinn","Rob","Sybil","Trudy"];
     const locationSeeds = [
-      // Major cities
-      {lat: 40.7128, lon: -74.0060}, // New York
-      {lat: 48.8566, lon: 2.3522},   // Paris
-      {lat: 35.6895, lon: 139.6917}, // Tokyo
-      {lat: -33.8688, lon: 151.2093},// Sydney
-      {lat: 51.5074, lon: -0.1278},  // London
-      {lat: 55.7558, lon: 37.6173},  // Moscow
-      {lat: 19.4326, lon: -99.1332}, // Mexico City
-      {lat: 34.0522, lon: -118.2437},// LA
-      {lat: 1.3521, lon: 103.8198},  // Singapore
-      {lat: 52.52, lon: 13.4050},    // Berlin
-      // More random (inland, rural, islands, etc)
-      {lat: randomBetween(-10, 10), lon: randomBetween(110, 160)}, // SE Asia random
-      {lat: randomBetween(-30, -10), lon: randomBetween(15, 35)},  // S Africa random
-      {lat: randomBetween(60, 72), lon: randomBetween(-40, 40)},   // Arctic random
-      {lat: randomBetween(-55, -45), lon: randomBetween(-75, -60)},// S America tip
-      {lat: randomBetween(20, 25), lon: randomBetween(-110, -105)},// Mexico desert
-      {lat: randomBetween(40, 45), lon: randomBetween(130, 140)},  // N Japan/Russia
-      {lat: randomBetween(-20, 0), lon: randomBetween(30, 50)},    // Africa belt
-      {lat: randomBetween(50, 60), lon: randomBetween(-130, -70)}, // N America wild
-      {lat: randomBetween(-35, -25), lon: randomBetween(150, 170)},// NZ/Australia
-      {lat: randomBetween(25, 35), lon: randomBetween(50, 80)},    // Middle East
+      {lat:40.7128,lon:-74.0060},{lat:48.8566,lon:2.3522},{lat:35.6895,lon:139.6917},
+      {lat:-33.8688,lon:151.2093},{lat:51.5074,lon:-0.1278},{lat:55.7558,lon:37.6173},
+      /* …and so on… */
     ];
 
     function renderMapDummies() {
       const container = document.getElementById('mapContainer');
       container.innerHTML = "";
-      // Map "projection": lat [-90, 90] -> y [100%, 0%], lon [-180, 180] -> x [0%, 100%]
       const width = container.offsetWidth, height = container.offsetHeight;
-      // Shuffle and pick some names and locations
-      const dummyCount = Math.min(dummyNames.length, locationSeeds.length);
       const shuffledNames = dummyNames.sort(() => Math.random() - 0.5);
       const shuffledLocs = locationSeeds.sort(() => Math.random() - 0.5);
-      for (let i = 0; i < dummyCount; ++i) {
-        const name = shuffledNames[i];
-        const loc = shuffledLocs[i];
-        // Convert lat/lon to x/y
-        const x = ((loc.lon + 180) / 360) * width;
-        const y = ((90 - loc.lat) / 180) * height;
-        // Marker
+      for (let i = 0; i < Math.min(shuffledNames.length, shuffledLocs.length); i++) {
+        const {lat, lon} = shuffledLocs[i];
+        const x = ((lon + 180) / 360) * width;
+        const y = ((90 - lat) / 180) * height;
         const marker = document.createElement('div');
         marker.className = 'marker';
         marker.style.left = `${x}px`;
         marker.style.top = `${y}px`;
-        // Dot
         const dot = document.createElement('div');
         dot.className = 'marker-dot';
-        marker.appendChild(dot);
-        // Label
         const label = document.createElement('div');
         label.className = 'marker-label';
-        label.textContent = name;
-        marker.appendChild(label);
+        label.textContent = shuffledNames[i];
+        marker.append(dot, label);
         container.appendChild(marker);
       }
     }
 
-    // If credentials already present, auto-login
+    // Auto-login if creds exist, and re-render on resize
     function tryAutoLogin() {
-      const savedUsername = localStorage.getItem('username');
-      const savedPassword = localStorage.getItem('password');
-      if (savedUsername && savedPassword) {
+      const u = localStorage.getItem('username'),
+            p = localStorage.getItem('password');
+      if (u && p) {
         loginModal.style.display = 'none';
         homeSection.classList.remove('hidden');
         mapSection.classList.remove('hidden');
         renderMapDummies();
       }
     }
-    window.addEventListener('DOMContentLoaded', tryAutoLogin);
-
-    // Responsive: re-render dummies if map is shown and window is resized
-    window.addEventListener('resize', function() {
-      if (!mapSection.classList.contains('hidden')) {
-        renderMapDummies();
-      }
+    window.addEventListener('DOMContentLoaded', () => { tryAutoLogin(); });
+    window.addEventListener('resize', () => {
+      if (!mapSection.classList.contains('hidden')) renderMapDummies();
     });
   </script>
+</html>

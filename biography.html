@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Biography – DANN</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    html, body { font-family: 'Poppins', sans-serif; }
+    .gradient-text {
+      background: linear-gradient(90deg, #001F54 0%, #FF7F11 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-white to-orange-50 text-gray-900 min-h-screen">
+  <!-- Navigation -->
+  <nav class="bg-white shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+      <a href="index.html" class="text-2xl font-bold gradient-text">DANN</a>
+      <ul class="flex space-x-6 font-semibold text-gray-600">
+        <!-- Home Dropdown -->
+        <li class="relative group">
+          <a href="index.html" class="hover:text-orange-600 flex items-center">Home
+            <svg class="ml-1 w-3 h-3 text-gray-400 group-hover:text-orange-600 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 12 12"><path d="M3 5l3 3 3-3"/></svg>
+          </a>
+          <ul class="absolute right-0 top-full w-48 rounded-lg shadow-lg border bg-white z-50 hidden group-hover:block transition">
+            <li>
+              <a href="biography.html" class="block px-5 py-2 text-gray-600 hover:bg-orange-50 hover:text-orange-600 rounded-t-lg transition">Biography</a>
+            </li>
+            <li>
+              <a href="portfolio.html" class="block px-5 py-2 text-gray-600 hover:bg-orange-50 hover:text-orange-600 transition">Portfolio</a>
+            </li>
+            <li>
+              <a href="donate.html" class="block px-5 py-2 text-gray-600 hover:bg-orange-50 hover:text-orange-600 rounded-b-lg transition">Donate</a>
+            </li>
+          </ul>
+        </li>
+        <!-- About Dropdown -->
+        <li class="relative group">
+          <a href="about.html" class="hover:text-orange-600 flex items-center">About
+            <svg class="ml-1 w-3 h-3 text-gray-400 group-hover:text-orange-600 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 12 12"><path d="M3 5l3 3 3-3"/></svg>
+          </a>
+          <ul class="absolute right-0 top-full w-40 rounded-lg shadow-lg border bg-white z-50 hidden group-hover:block transition">
+            <li>
+              <a href="creator.html" class="block px-5 py-2 text-gray-600 hover:bg-orange-50 hover:text-orange-600 rounded-t-lg transition">Creator</a>
+            </li>
+            <li>
+              <a href="cosine.html" class="block px-5 py-2 text-gray-600 hover:bg-orange-50 hover:text-orange-600 rounded-b-lg transition">Cosine</a>
+            </li>
+          </ul>
+        </li>
+        <!-- Contact (no dropdown) -->
+        <li>
+          <a href="contact.html" class="hover:text-orange-600">Contact</a>
+        </li>
+        <!-- Sign Up (new) -->
+        <li>
+          <a href="signup.html" class="hover:text-orange-600">Sign Up</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Main Section -->
+  <main class="flex flex-col items-center justify-center min-h-[60vh] px-4">
+    <h1 class="text-4xl md:text-5xl font-bold mb-6 gradient-text">Biography</h1>
+    <p class="text-lg text-gray-700 max-w-2xl text-center">
+      Lionel Andrés Messi (Spanish pronunciation: [ljoˈnel anˈdɾes ˈmesi]; born 24 June 1987) is an Argentine professional footballer who plays as a forward for and captains both Major League Soccer club Inter Miami and the Argentina national team. Widely regarded as one of the greatest players of all time, Messi has won a record eight Ballon d'Or awards, a record six European Golden Shoes, and was named the world's best player by FIFA a record eight times. Until leaving in 2021, he had spent his entire professional career with Barcelona, where he won 35 trophies, including ten La Liga titles, seven Copa del Rey titles and the UEFA Champions League four times. A prolific goalscorer and creative playmaker, Messi holds the records for most goals in La Liga, a La Liga and European league season, most hat-tricks in La Liga and the UEFA Champions League, and most assists in La Liga, a La Liga season and the Copa América. He also has the most international goals by a South American male.
+    </p>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t mt-20">
+    <div class="max-w-6xl mx-auto px-4 py-8 text-center text-gray-500 text-sm">
+      &copy; 2025 DANN. All rights reserved.
+    </div>
+  </footer>
+  <script src="auth.js"></script>
+</html>
