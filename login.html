@@ -217,9 +217,7 @@
 
       window.DANNAuth.setCurrentUser({ username: user.username, email: user.email });
       alert('✔️ Logged in!');
-      const redirect = localStorage.getItem('dann_prevPage') || 'index.html';
-      localStorage.removeItem('dann_prevPage');
-      window.location.href = redirect;
+      window.location.href = 'index.html';
     });
 </body>
 </html>

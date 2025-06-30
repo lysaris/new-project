@@ -107,6 +107,30 @@
       {name:'Lucas', loc:[40.4168,-3.7038]},  // Madrid
     ];
 
+    // Extra dummy people (subset adapted from index.html demo)
+    const dummies = [
+      { name: "Alice",   loc: [40.7128, -74.0060] },   // NYC
+      { name: "Bob",     loc: [48.8566, 2.3522] },     // Paris
+      { name: "Charlie", loc: [35.6895, 139.6917] },   // Tokyo
+      { name: "Diana",   loc: [-33.8688, 151.2093] },  // Sydney
+      { name: "Eve",     loc: [51.5074, -0.1278] },    // London
+      { name: "Frank",   loc: [55.7558, 37.6173] },    // Moscow
+      { name: "Grace",   loc: [34.0522, -118.2437] },  // LA
+      { name: "Heidi",   loc: [52.52, 13.4050] },      // Berlin
+      { name: "Ivan",    loc: [41.9028, 12.4964] },    // Rome
+      { name: "Judy",    loc: [19.4326, -99.1332] },   // Mexico City
+      { name: "Mallory", loc: [39.9042, 116.4074] },   // Beijing
+      { name: "Olivia",  loc: [1.3521, 103.8198] },    // Singapore
+      { name: "Peggy",   loc: [59.3293, 18.0686] },    // Stockholm
+      { name: "Trudy",   loc: [31.2304, 121.4737] },   // Shanghai
+      { name: "Sybil",   loc: [35.6762, 139.6503] },   // Tokyo (alt)
+      { name: "Karl",    loc: [45.4642, 9.19] },       // Milan
+      { name: "Quinn",   loc: [25.2048, 55.2708] },    // Dubai
+    ];
+
+    // Merge all people into one array
+    const allPeople = friends.concat(dummies);
+
     // Map setup
     const map = L.map('map', { zoomControl: true, attributionControl: false }).setView([0, 0], 2);
 
@@ -115,7 +139,7 @@
       maxZoom: 19,
     }).addTo(map);
 
-    // Add friends markers (use blue icon)
+    // Add all markers (use blue icon for allPeople)
     const friendIcon = new L.Icon({
       iconUrl: 'https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/images/marker-icon.png',
       iconSize: [25, 41],
@@ -126,9 +150,9 @@
     });
 
     let markers = [];
-    friends.forEach(friend => {
-      const m = L.marker(friend.loc, { icon: friendIcon }).addTo(map)
-        .bindPopup(`<b>${friend.name}</b>`);
+    allPeople.forEach(person => {
+      const m = L.marker(person.loc, { icon: friendIcon }).addTo(map)
+        .bindPopup(`<b>${person.name}</b>`);
       markers.push(m);
     });
 
@@ -151,17 +175,21 @@
           if (userMarker) map.removeLayer(userMarker);
           userMarker = L.marker([latitude, longitude], { icon: userIcon }).addTo(map)
             .bindPopup("<b>You</b>").openPopup();
-          // Fit map to show user and friends
-          const bounds = L.latLngBounds([[latitude, longitude], ...friends.map(f => f.loc)]);
+          // Fit map to show user and allPeople
+          const bounds = L.latLngBounds([[latitude, longitude], ...allPeople.map(f => f.loc)]);
           map.fitBounds(bounds, { padding: [40, 40] });
         },
         function(err) {
-          map.setView([0, 0], 2);
-          L.popup().setLatLng([0, 0]).setContent("Location permission denied. Showing world view.").openOn(map);
+          // If denied, fit map to allPeople only
+          const bounds = L.latLngBounds(allPeople.map(f => f.loc));
+          map.fitBounds(bounds, { padding: [40, 40] });
+          L.popup().setLatLng(map.getCenter()).setContent("Location permission denied. Showing demo friends.").openOn(map);
         }
       );
     } else {
-      map.setView([0, 0], 2);
+      // If geolocation unsupported, fit to allPeople
+      const bounds = L.latLngBounds(allPeople.map(f => f.loc));
+      map.fitBounds(bounds, { padding: [40, 40] });
     }
   </script>
   <script src="auth.js"></script>

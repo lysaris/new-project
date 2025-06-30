@@ -162,6 +162,8 @@
       &copy; 2025 DANN. All rights reserved.
     </div>
   </footer>
+  <!-- Add auth.js before any code that needs window.DANNAuth -->
+  <script src="auth.js"></script>
   <script>
     // --- Password Eye Icon Show/Hide Logic ---
     const passwordInput = document.getElementById('password');
@@ -227,6 +229,10 @@
         // Save credentials locally
         localStorage.setItem('username', username);
         localStorage.setItem('password', password);
+        // Set current user for navbar swap
+        if (window.DANNAuth && typeof window.DANNAuth.setCurrentUser === "function") {
+          window.DANNAuth.setCurrentUser({ username });
+        }
         // Hide login modal, show home and map
         loginModal.style.display = 'none';
         homeSection.classList.remove('hidden');
