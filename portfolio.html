@@ -8,7 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
-    <!-- Firebase scripts removed -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="theme.css">
   <style>
     html, body { font-family: 'Poppins', sans-serif; }
     .gradient-text {
@@ -24,47 +25,50 @@
   <nav class="bg-white shadow-sm">
     <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
       <a href="index.html" class="text-2xl font-bold gradient-text">DANN</a>
-      <ul class="flex space-x-6 font-semibold text-gray-600">
-        <!-- Home Dropdown -->
-        <li class="relative group">
-          <a href="index.html" class="hover:text-orange-600 flex items-center">Home
-            <svg class="ml-1 w-3 h-3 text-gray-400 group-hover:text-orange-600 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 12 12"><path d="M3 5l3 3 3-3"/></svg>
-          </a>
-          <ul class="absolute right-0 top-full w-48 rounded-lg shadow-lg border bg-white z-50 hidden group-hover:block transition">
-            <li>
-              <a href="biography.html" class="block px-5 py-2 text-gray-600 hover:bg-orange-50 hover:text-orange-600 rounded-t-lg transition">Biography</a>
-            </li>
-            <li>
-              <a href="portfolio.html" class="block px-5 py-2 text-gray-600 hover:bg-orange-50 hover:text-orange-600 transition">Portfolio</a>
-            </li>
-            <li>
-              <a href="donate.html" class="block px-5 py-2 text-gray-600 hover:bg-orange-50 hover:text-orange-600 rounded-b-lg transition">Donate</a>
-            </li>
-          </ul>
-        </li>
-        <!-- About Dropdown -->
-        <li class="relative group">
-          <a href="about.html" class="hover:text-orange-600 flex items-center">About
-            <svg class="ml-1 w-3 h-3 text-gray-400 group-hover:text-orange-600 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 12 12"><path d="M3 5l3 3 3-3"/></svg>
-          </a>
-          <ul class="absolute right-0 top-full w-40 rounded-lg shadow-lg border bg-white z-50 hidden group-hover:block transition">
-            <li>
-              <a href="creator.html" class="block px-5 py-2 text-gray-600 hover:bg-orange-50 hover:text-orange-600 rounded-t-lg transition">Creator</a>
-            </li>
-            <li>
-              <a href="cosine.html" class="block px-5 py-2 text-gray-600 hover:bg-orange-50 hover:text-orange-600 rounded-b-lg transition">Cosine</a>
-            </li>
-          </ul>
-        </li>
-        <!-- Contact (no dropdown) -->
-        <li>
-          <a href="contact.html" class="hover:text-orange-600">Contact</a>
-        </li>
-        <!-- Sign Up (new) -->
-        <li>
-          <a href="signup.html" class="hover:text-orange-600">Sign Up</a>
-        </li>
-      </ul>
+      <div class="flex items-center space-x-6 font-semibold text-gray-600">
+        <ul class="flex space-x-6">
+          <!-- Home Dropdown -->
+          <li class="relative group">
+            <a href="index.html" class="hover:text-orange-600 flex items-center">Home
+              <svg class="ml-1 w-3 h-3 text-gray-400 group-hover:text-orange-600 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 12 12"><path d="M3 5l3 3 3-3"/></svg>
+            </a>
+            <ul class="absolute right-0 top-full w-48 rounded-lg shadow-lg border bg-white z-50 hidden group-hover:block transition">
+              <li>
+                <a href="biography.html" class="block px-5 py-2 text-gray-600 hover:bg-orange-50 hover:text-orange-600 rounded-t-lg transition">Biography</a>
+              </li>
+              <li>
+                <a href="portfolio.html" class="block px-5 py-2 text-gray-600 hover:bg-orange-50 hover:text-orange-600 transition">Portfolio</a>
+              </li>
+              <li>
+                <a href="donate.html" class="block px-5 py-2 text-gray-600 hover:bg-orange-50 hover:text-orange-600 rounded-b-lg transition">Donate</a>
+              </li>
+            </ul>
+          </li>
+          <!-- About Dropdown -->
+          <li class="relative group">
+            <a href="about.html" class="hover:text-orange-600 flex items-center">About
+              <svg class="ml-1 w-3 h-3 text-gray-400 group-hover:text-orange-600 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 12 12"><path d="M3 5l3 3 3-3"/></svg>
+            </a>
+            <ul class="absolute right-0 top-full w-40 rounded-lg shadow-lg border bg-white z-50 hidden group-hover:block transition">
+              <li>
+                <a href="creator.html" class="block px-5 py-2 text-gray-600 hover:bg-orange-50 hover:text-orange-600 rounded-t-lg transition">Creator</a>
+              </li>
+              <li>
+                <a href="cosine.html" class="block px-5 py-2 text-gray-600 hover:bg-orange-50 hover:text-orange-600 rounded-b-lg transition">Cosine</a>
+              </li>
+            </ul>
+          </li>
+          <!-- Contact (no dropdown) -->
+          <li>
+            <a href="contact.html" class="hover:text-orange-600">Contact</a>
+          </li>
+          <!-- Sign Up (new) -->
+          <li>
+            <a href="signup.html" class="hover:text-orange-600">Sign Up</a>
+          </li>
+        </ul>
+        <button id="theme-toggle" class="text-xl hover:text-orange-600"></button>
+      </div>
     </div>
   </nav>
 
@@ -81,4 +85,5 @@
     </div>
   </footer>
   <script src="auth.js"></script>
+  <script src="theme.js" defer></script>
 </html>
