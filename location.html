@@ -327,5 +327,67 @@
     // Not implemented as per instructions to keep all live updates unchanged.
 
     // All live-update logic above remains unchanged; new features appended.
+
+/* === Proximity Alert Feature === */
+
+// 1. CONSTANTS & STATE
+const PROX_RADIUS = 20; // meters
+const nearFriends = new Set(); // names currently within radius
+
+// Helper: Get user's current LatLng object or null
+function getUserLatLng() {
+  return userMarker ? userMarker.getLatLng() : null;
+}
+
+// 2. TOAST UI HELPER
+function showToast(msg) {
+  const toast = document.createElement("div");
+  toast.className = "fixed top-4 left-1/2 bg-purple-600 text-white px-4 py-2 rounded shadow-lg z-50";
+  toast.textContent = msg;
+  toast.style.transform = "translateX(-50%)";
+  toast.style.transition = "opacity 0.4s";
+  document.body.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = "0";
+    setTimeout(() => toast.remove(), 400);
+  }, 4000);
+}
+
+// 3. PROXIMITY CHECK
+function checkProximity() {
+  const userLL = getUserLatLng();
+  if (!userLL) return;
+  friends.forEach((f, idx) => {
+    // f.loc is [lat, lng] array; convert to LatLng for distance
+    const friendLL = L.latLng(f.loc[0], f.loc[1]);
+    const dist = userLL.distanceTo(friendLL); // meters
+    if (dist < PROX_RADIUS) {
+      if (!nearFriends.has(f.name)) {
+        nearFriends.add(f.name);
+        showToast(`${f.name} is within ${Math.round(dist)} m!`);
+      }
+    } else if (dist > PROX_RADIUS * 1.5) { // hysteresis
+      nearFriends.delete(f.name);
+    }
+  });
+}
+
+// 4. CALL SITES
+
+// Patch handleUserPosition to call checkProximity after updating marker and polyline
+const origHandleUserPosition = handleUserPosition;
+handleUserPosition = function(pos) {
+  origHandleUserPosition(pos);
+  checkProximity();
+};
+
+// Patch updateFriends to call checkProximity after moving friend markers & updating history
+const origUpdateFriends = updateFriends;
+updateFriends = function() {
+  origUpdateFriends();
+  checkProximity();
+};
+
+// (No other code changed; feature is fully appended.)
 </body>
 </html>
