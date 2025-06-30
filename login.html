@@ -84,6 +84,15 @@
     <div class="bg-white rounded-2xl shadow-lg max-w-md w-full p-8 mx-2">
       <h2 class="text-3xl font-bold mb-3 gradient-text text-center">Log In</h2>
       <form id="loginForm" class="space-y-5" autocomplete="off" novalidate>
+        <div id="twoFaSection" class="hidden mb-3">
+          <label for="twoFaCode" class="block font-semibold mb-1">2FA Code (e-mail)</label>
+          <div class="flex gap-2 items-center">
+            <input type="text" id="twoFaCode" inputmode="numeric" pattern="\d{6}" maxlength="6" autocomplete="off"
+              class="w-32 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 text-center font-mono" placeholder="123456" />
+            <button type="button" id="verifyTwoFa" class="bg-orange-600 hover:bg-orange-700 text-white font-semibold px-4 py-2 rounded-lg transition">Verify Code</button>
+            <span id="twoFaVerified" class="ml-2 text-green-600 text-sm font-semibold hidden">✅ 2FA verified</span>
+          </div>
+        </div>
         <div>
           <label for="identifier" class="block font-semibold mb-1">Username / Email</label>
           <input type="text" id="identifier" name="identifier" required
@@ -110,6 +119,7 @@
           </span>
         </div>
         <button type="submit"
+                id="signInBtn"
                 class="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2 rounded-lg shadow transition">
           Sign In
         </button>
@@ -143,14 +153,76 @@
               d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>`;
     });
 
+    // --- 2FA Logic ---
+    const twoFaSection = document.getElementById('twoFaSection');
+    const signInBtn = document.getElementById('signInBtn');
+    const verifyTwoFa = document.getElementById('verifyTwoFa');
+    const twoFaCode = document.getElementById('twoFaCode');
+    const twoFaVerified = document.getElementById('twoFaVerified');
+
+    function show2FA() {
+      twoFaSection.classList.remove('hidden');
+      signInBtn.disabled = true;
+      signInBtn.classList.add('opacity-60', 'cursor-not-allowed');
+      twoFaVerified.classList.add('hidden');
+      twoFaCode.value = '';
+    }
+    function hide2FA() {
+      twoFaSection.classList.add('hidden');
+      signInBtn.disabled = false;
+      signInBtn.classList.remove('opacity-60', 'cursor-not-allowed');
+      twoFaVerified.classList.add('hidden');
+      twoFaCode.value = '';
+    }
+    function enable2FAUI() {
+      twoFaSection.classList.remove('hidden');
+      signInBtn.disabled = true;
+      signInBtn.classList.add('opacity-60', 'cursor-not-allowed');
+    }
+
+    // On page load, check localStorage for dann_2fa
+    if (localStorage.getItem('dann_2fa') === 'enabled') {
+      enable2FAUI();
+    } else {
+      hide2FA();
+    }
+
+    // 2FA Verify logic
+    verifyTwoFa.addEventListener('click', function() {
+      const code = twoFaCode.value.trim();
+      if (/^\d{6}$/.test(code)) {
+        if (code === '123456') {
+          twoFaSection.classList.add('hidden');
+          signInBtn.disabled = false;
+          signInBtn.classList.remove('opacity-60', 'cursor-not-allowed');
+          twoFaVerified.classList.remove('hidden');
+        } else {
+          alert("Incorrect code in demo");
+        }
+      } else {
+        alert("Please enter the 6-digit code.");
+      }
+    });
+
     // Log in form submit
     document.getElementById('loginForm').addEventListener('submit', function(e) {
-      if (this.checkValidity()) {
+      // If 2FA required, don't allow submit unless verified
+      if (localStorage.getItem('dann_2fa') === 'enabled' && !signInBtn.disabled) {
+        if (this.checkValidity()) {
+          e.preventDefault();
+          alert("✔️ Sign-in form passed (2FA enabled / demo only).");
+        }
+      } else if (localStorage.getItem('dann_2fa') === 'enabled' && signInBtn.disabled) {
         e.preventDefault();
-        alert("✔️ Sign-up form passed basic client-side validation (no backend wired yet).");
+        alert("You must verify your 2FA code first.");
+      } else {
+        // 2FA not enabled, normal login
+        if (this.checkValidity()) {
+          e.preventDefault();
+          alert("✔️ Sign-up form passed basic client-side validation (no backend wired yet).");
+        }
       }
       // else let browser show the UI
     });
-  </script>
 </body>
 </html>

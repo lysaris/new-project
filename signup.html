@@ -95,6 +95,12 @@
                  placeholder="Choose a unique username"
                  class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400" />
         </div>
+        <div class="flex items-center mb-1">
+          <input type="checkbox" id="enable2fa" name="enable2fa" class="mr-2 accent-orange-600">
+          <label for="enable2fa" class="font-semibold select-none cursor-pointer">
+            Enable 2-Factor Authentication (e-mail code)
+          </label>
+        </div>
         <div class="relative">
           <label for="password" class="block font-semibold mb-1">Password</label>
           <input
@@ -161,10 +167,16 @@
     document.getElementById('signupForm').addEventListener('submit', function(e) {
       if (this.checkValidity()) {
         e.preventDefault();
-        alert("✔️ Sign-up form passed basic client-side validation (no backend wired yet).");
+        const enable2fa = document.getElementById('enable2fa').checked;
+        if (enable2fa) {
+          localStorage.setItem('dann_2fa', 'enabled');
+          alert("✔️ Sign-up successful – a verification code has been e-mailed to you (demo only).");
+        } else {
+          localStorage.removeItem('dann_2fa');
+          alert("✔️ Sign-up form passed basic client-side validation (no backend wired yet).");
+        }
       }
       // else let browser show the UI
     });
-  </script>
 </body>
 </html>
