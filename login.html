@@ -20,10 +20,17 @@
       cursor: pointer;
       position: absolute;
       right: 1rem;
-      top: 50%;
+      top: 2.5rem;
       transform: translateY(-50%);
       color: #aaa;
       transition: color 0.2s;
+      z-index: 2;
+      background: transparent;
+      padding: 0;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .eye-icon:hover {
       color: #FF7F11;
@@ -137,22 +144,33 @@
   <!-- Log In JS -->
   <script src="auth.js"></script>
   <script>
-    // Eye-toggle for password
-    const loginPasswordInput = document.getElementById('loginPassword');
-    const toggleLoginPassword = document.getElementById('toggleLoginPassword');
-    const loginEyeIcon = document.getElementById('loginEyeIcon');
-    let loginPasswordVisible = false;
-    toggleLoginPassword.addEventListener('click', function() {
-      loginPasswordVisible = !loginPasswordVisible;
-      loginPasswordInput.type = loginPasswordVisible ? 'text' : 'password';
-      loginEyeIcon.innerHTML = loginPasswordVisible
-        ? `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-             d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.956 9.956 0 012.19-3.308M6.11 6.11A9.956 9.956 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.96 9.96 0 01-4.21 5.442M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-             d="M3 3l18 18"/>`
-        : `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>`;
-    });
+    // Password visibility utility (press-and-hold)
+    (function() {
+      const loginPasswordInput = document.getElementById('loginPassword');
+      const toggleLoginPassword = document.getElementById('toggleLoginPassword');
+      const loginEyeIcon = document.getElementById('loginEyeIcon');
+      let eyeActive = false;
+
+      function setPasswordVisible(visible) {
+        loginPasswordInput.type = visible ? 'text' : 'password';
+        loginEyeIcon.innerHTML = visible
+          ? `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+               d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.956 9.956 0 012.19-3.308M6.11 6.11A9.956 9.956 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.96 9.96 0 01-4.21 5.442M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+               d="M3 3l18 18"/>`
+          : `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>`;
+      }
+      function show() { setPasswordVisible(true); }
+      function hide() { setPasswordVisible(false); }
+
+      toggleLoginPassword.addEventListener('mousedown', e => { show(); eyeActive = true; });
+      toggleLoginPassword.addEventListener('mouseup', e => { hide(); eyeActive = false; });
+      toggleLoginPassword.addEventListener('mouseleave', e => { if (eyeActive) { hide(); eyeActive = false; } });
+      toggleLoginPassword.addEventListener('touchstart', e => { show(); eyeActive = true; }, {passive:true});
+      toggleLoginPassword.addEventListener('touchend', e => { hide(); eyeActive = false; });
+      toggleLoginPassword.addEventListener('touchcancel', e => { if (eyeActive) { hide(); eyeActive = false; } });
+    })();
 
     // ------------- LOGIN / 2FA LOGIC -------------
     const identifierInput = document.getElementById('identifier');
@@ -204,7 +222,7 @@
       e.preventDefault();
 
       const id   = identifierInput.value.trim();
-      const pass = loginPasswordInput.value;
+      const pass = document.getElementById('loginPassword').value;
       const users = window.DANNAuth.getUsers();
       const user = users.find(u => u.username === id || u.email === id);
       if (!user) { alert('No such user.'); return; }
