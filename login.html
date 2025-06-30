@@ -135,6 +135,7 @@
   </footer>
 
   <!-- Log In JS -->
+  <script src="auth.js"></script>
   <script>
     // Eye-toggle for password
     const loginPasswordInput = document.getElementById('loginPassword');
@@ -153,76 +154,72 @@
               d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>`;
     });
 
-    // --- 2FA Logic ---
-    const twoFaSection = document.getElementById('twoFaSection');
-    const signInBtn = document.getElementById('signInBtn');
-    const verifyTwoFa = document.getElementById('verifyTwoFa');
-    const twoFaCode = document.getElementById('twoFaCode');
-    const twoFaVerified = document.getElementById('twoFaVerified');
+    // ------------- LOGIN / 2FA LOGIC -------------
+    const identifierInput = document.getElementById('identifier');
+    const loginForm = document.getElementById('loginForm');
+    const twoFaSection   = document.getElementById('twoFaSection');
+    const signInBtn      = document.getElementById('signInBtn');
+    const verifyTwoFa    = document.getElementById('verifyTwoFa');
+    const twoFaCode      = document.getElementById('twoFaCode');
+    const twoFaVerified  = document.getElementById('twoFaVerified');
 
     function show2FA() {
       twoFaSection.classList.remove('hidden');
       signInBtn.disabled = true;
-      signInBtn.classList.add('opacity-60', 'cursor-not-allowed');
+      signInBtn.classList.add('opacity-60','cursor-not-allowed');
       twoFaVerified.classList.add('hidden');
       twoFaCode.value = '';
     }
     function hide2FA() {
       twoFaSection.classList.add('hidden');
       signInBtn.disabled = false;
-      signInBtn.classList.remove('opacity-60', 'cursor-not-allowed');
+      signInBtn.classList.remove('opacity-60','cursor-not-allowed');
       twoFaVerified.classList.add('hidden');
       twoFaCode.value = '';
     }
-    function enable2FAUI() {
-      twoFaSection.classList.remove('hidden');
-      signInBtn.disabled = true;
-      signInBtn.classList.add('opacity-60', 'cursor-not-allowed');
-    }
 
-    // On page load, check localStorage for dann_2fa
-    if (localStorage.getItem('dann_2fa') === 'enabled') {
-      enable2FAUI();
-    } else {
-      hide2FA();
-    }
+    // As soon as the visitor types their username/email, decide if we need to ask for 2FA
+    identifierInput.addEventListener('blur', function(){
+      const id = this.value.trim();
+      const user = window.DANNAuth.getUsers().find(u => u.username === id || u.email === id);
+      if (user && user.enable2fa) { show2FA(); } else { hide2FA(); }
+    });
 
-    // 2FA Verify logic
-    verifyTwoFa.addEventListener('click', function() {
-      const code = twoFaCode.value.trim();
-      if (/^\d{6}$/.test(code)) {
-        if (code === '123456') {
-          twoFaSection.classList.add('hidden');
-          signInBtn.disabled = false;
-          signInBtn.classList.remove('opacity-60', 'cursor-not-allowed');
+    // Verify 6-digit demo code
+    verifyTwoFa.addEventListener('click', function(){
+      if (/^\d{6}$/.test(twoFaCode.value.trim())) {
+        if (twoFaCode.value.trim() === '123456') {
+          hide2FA();
           twoFaVerified.classList.remove('hidden');
         } else {
-          alert("Incorrect code in demo");
+          alert('Incorrect code (demo uses 123456).');
         }
       } else {
-        alert("Please enter the 6-digit code.");
+        alert('Please enter the 6-digit code.');
       }
     });
 
-    // Log in form submit
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
-      // If 2FA required, don't allow submit unless verified
-      if (localStorage.getItem('dann_2fa') === 'enabled' && !signInBtn.disabled) {
-        if (this.checkValidity()) {
-          e.preventDefault();
-          alert("✔️ Sign-in form passed (2FA enabled / demo only).");
-        }
-      } else if (localStorage.getItem('dann_2fa') === 'enabled' && signInBtn.disabled) {
-        e.preventDefault();
-        alert("You must verify your 2FA code first.");
-      } else {
-        // 2FA not enabled, normal login
-        if (this.checkValidity()) {
-          e.preventDefault();
-          alert("✔️ Sign-up form passed basic client-side validation (no backend wired yet).");
-        }
+    loginForm.addEventListener('submit', function(e){
+      if (!this.checkValidity()) return; // browser handles message
+      e.preventDefault();
+
+      const id   = identifierInput.value.trim();
+      const pass = loginPasswordInput.value;
+      const users = window.DANNAuth.getUsers();
+      const user = users.find(u => u.username === id || u.email === id);
+      if (!user) { alert('No such user.'); return; }
+      if (user.password !== pass) { alert('Wrong password.'); return; }
+
+      if (user.enable2fa) {
+        if (twoFaSection.classList.contains('hidden')) { alert('2FA required.'); return; }
+        if (twoFaCode.value.trim() !== '123456') { alert('Enter the correct 2FA code.'); return; }
       }
-      // else let browser show the UI
+
+      window.DANNAuth.setCurrentUser({ username: user.username, email: user.email });
+      alert('✔️ Logged in!');
+      const redirect = localStorage.getItem('dann_prevPage') || 'index.html';
+      localStorage.removeItem('dann_prevPage');
+      window.location.href = redirect;
     });
 </body>
 </html>

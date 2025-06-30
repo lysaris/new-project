@@ -145,6 +145,7 @@
   </footer>
 
   <!-- Sign Up JS -->
+  <script src="auth.js"></script>
   <script>
     // Eye-toggle for password
     const passwordInput = document.getElementById('password');
@@ -163,20 +164,37 @@
               d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>`;
     });
 
-    // Sign up form submit
-    document.getElementById('signupForm').addEventListener('submit', function(e) {
-      if (this.checkValidity()) {
-        e.preventDefault();
-        const enable2fa = document.getElementById('enable2fa').checked;
-        if (enable2fa) {
-          localStorage.setItem('dann_2fa', 'enabled');
-          alert("✔️ Sign-up successful – a verification code has been e-mailed to you (demo only).");
-        } else {
-          localStorage.removeItem('dann_2fa');
-          alert("✔️ Sign-up form passed basic client-side validation (no backend wired yet).");
-        }
+    // ------------- SIGN-UP LOGIC -------------
+    const signupForm = document.getElementById('signupForm');
+    signupForm.addEventListener('submit', function (e) {
+      if (!this.checkValidity()) return; // let browser report
+      e.preventDefault();
+
+      const email = document.getElementById('email').value.trim();
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const enable2fa = document.getElementById('enable2fa').checked;
+
+      const users = window.DANNAuth.getUsers();
+      const duplicate = users.find(u => u.username === username || u.email === email);
+      if (duplicate) {
+        alert('🚫 Username or e-mail already exists.');
+        return;
       }
-      // else let browser show the UI
+
+      users.push({ email, username, password, enable2fa });
+      window.DANNAuth.saveUsers(users);
+      window.DANNAuth.setCurrentUser({ username, email });
+
+      if (enable2fa) {
+        alert('✔️ Sign-up successful – a verification code has been e-mailed to you (demo only).');
+      } else {
+        alert('✔️ Account created successfully.');
+      }
+
+      const redirect = localStorage.getItem('dann_prevPage') || 'index.html';
+      localStorage.removeItem('dann_prevPage');
+      window.location.href = redirect;
     });
 </body>
 </html>
