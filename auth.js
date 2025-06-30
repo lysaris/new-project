@@ -27,7 +27,8 @@
   // Load users from localStorage
   function getUsers() {
     try {
-      return JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+      const users = JSON.parse(localStorage.getItem(USERS_KEY));
+      return Array.isArray(users) ? users : [];
     } catch { return []; }
   }
   function saveUsers(users) {
@@ -93,17 +94,20 @@
     return null;
   }
 
+  // Normalization helper for identifiers (trims and lowercases)
+  function norm(v) { return (v || "").trim().toLowerCase(); }
+
   // Sign Up
   async function signUp({ email, password, username }) {
-    email = (email || "").toLowerCase().trim();
-    username = (username || "").trim();
+    email = norm(email);
+    username = (username || "").trim(); // username is trimmed, but case-preserved
     if (!email || !username || !password) throw new Error("All fields required.");
     if (!/^[\w.+-]+@\w+\.\w+/.test(email)) throw new Error("Invalid email.");
     if (username.length < 3) throw new Error("Username too short.");
     if (password.length < 4 || password.length > 32) throw new Error("Password must be 4-32 characters.");
     let users = getUsers();
-    if (users.some(u => u.email === email)) throw new Error("Email already registered.");
-    if (users.some(u => u.username.toLowerCase() === username.toLowerCase())) throw new Error("Username already taken.");
+    if (users.some(u => norm(u.email) === email)) throw new Error("Email already registered.");
+    if (users.some(u => norm(u.username) === norm(username))) throw new Error("Username already taken.");
     const salt = generateSalt();
     const hash = await hashPassword(salt, password);
     users.push({ email, username, salt, hash });
@@ -114,12 +118,12 @@
   // Sign In
   // Accepts optional boolean "remember" (default true): sets 30-day cookie if true, session cookie if false.
   async function signIn({ identifier, password, remember = true }) {
-    identifier = (identifier || "").trim();
+    identifier = norm(identifier);
     if (!identifier || !password) throw new Error("All fields required.");
     let users = getUsers();
     const user = users.find(u =>
-      u.email === identifier.toLowerCase() ||
-      u.username.toLowerCase() === identifier.toLowerCase()
+      norm(u.email) === identifier ||
+      norm(u.username) === identifier
     );
     if (!user) throw new Error("User not found.");
     const hash = await hashPassword(user.salt, password);
