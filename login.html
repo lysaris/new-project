@@ -8,10 +8,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
-    <!-- Firebase scripts -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <!-- Firebase scripts removed -->
+    <!-- <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-    <script src="firebase-config.js"></script>
+    <script src="firebase-config.js"></script> -->
     <style>
       html, body { font-family: 'Poppins', sans-serif; }
       .gradient-text {
@@ -96,8 +96,8 @@
       <h2 class="text-3xl font-bold mb-3 gradient-text text-center">Log In</h2>
       <form id="loginForm" class="space-y-5" autocomplete="off" novalidate>
         <div>
-          <label for="identifier" class="block font-semibold mb-1">Email</label>
-          <input type="email" id="identifier" name="identifier" required
+          <label for="identifier" class="block font-semibold mb-1">Username / Email</label>
+          <input type="text" id="identifier" name="identifier" required
                  class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400" />
         </div>
         <div class="relative">
