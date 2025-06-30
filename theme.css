@@ -1,0 +1,46 @@
+:root {
+  --bg-from: #eff6ff; /* blue-50 */
+  --bg-via: #ffffff;
+  --bg-to:   #fff7ed; /* orange-50 */
+  --text:    #111827; /* gray-900 */
+  --nav-bg:  #ffffff;
+  --nav-text:#4b5563; /* gray-600 */
+  --nav-hover:#ea580c; /* orange-600 */
+  --dropdown-bg:#ffffff;
+  --footer-bg:#ffffff;
+  --footer-text:#6b7280;
+}
+[data-theme="dark"] {
+  --bg-from:#111827;   /* gray-900 */
+  --bg-via:#1f2937;    /* gray-800 */
+  --bg-to: #374151;    /* gray-700 */
+  --text:#d1d5db;      /* gray-300 */
+  --nav-bg:#1f2937;
+  --nav-text:#d1d5db;
+  --nav-hover:#fb923c; /* orange-400 */
+  --dropdown-bg:#1f2937;
+  --footer-bg:#1f2937;
+  --footer-text:#9ca3af;
+}
+
+/* Global element overrides so we don't have to edit every Tailwind class individually */
+body {
+  background-image: linear-gradient(to bottom right,var(--bg-from),var(--bg-via),var(--bg-to));
+  color: var(--text);
+}
+nav {
+  background-color: var(--nav-bg) !important;
+}
+nav a {
+  color: var(--nav-text) !important;
+}
+nav a:hover {
+  color: var(--nav-hover) !important;
+}
+nav ul ul { /* dropdown menus */
+  background-color: var(--dropdown-bg) !important;
+}
+footer {
+  background-color: var(--footer-bg) !important;
+  color: var(--footer-text) !important;
+}
