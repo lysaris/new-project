@@ -9,6 +9,51 @@
   --dropdown-bg:#ffffff;
   --footer-bg:#ffffff;
   --footer-text:#6b7280;
+
+  /* Font size system */
+  --base-font-size: 16px;
+}
+/* Font size modifiers */
+[data-font="small"] { --base-font-size: 14px; }
+[data-font="large"] { --base-font-size: 18px; }
+body { font-size: var(--base-font-size); }
+
+/* Theme palettes */
+[data-theme="orangePink"] {
+  --bg-from:#fff7ed;  /* orange-50 */
+  --bg-via:#ffedd5;   /* orange-100 */
+  --bg-to:  #ffe4e6;  /* rose-100 */
+  --text:#7c2d12;     /* orange-800 */
+  --nav-bg:#fff7ed;
+  --nav-text:#9a3412;
+  --nav-hover:#ea580c; /* orange-600 */
+  --dropdown-bg:#fff7ed;
+  --footer-bg:#fff7ed;
+  --footer-text:#9a3412;
+}
+[data-theme="plumPine"] {
+  --bg-from:#f5f3ff; /* violet-50 */
+  --bg-via:#ede9fe;  /* violet-100 */
+  --bg-to:  #e0e7ff; /* indigo-100 */
+  --text:#312e81;    /* indigo-900 */
+  --nav-bg:#ede9fe;
+  --nav-text:#4c1d95;
+  --nav-hover:#a78bfa; /* violet-400 */
+  --dropdown-bg:#ede9fe;
+  --footer-bg:#ede9fe;
+  --footer-text:#4c1d95;
+}
+[data-theme="yellowNavy"] {
+  --bg-from:#fffbeb; /* yellow-50 */
+  --bg-via:#fef9c3;  /* yellow-100 */
+  --bg-to:  #e0f2fe; /* sky-100 */
+  --text:#0c4a6e;    /* sky-900 */
+  --nav-bg:#fffbeb;
+  --nav-text:#92400e;
+  --nav-hover:#facc15; /* yellow-400 */
+  --dropdown-bg:#fffbeb;
+  --footer-bg:#fffbeb;
+  --footer-text:#92400e;
 }
 [data-theme="dark"] {
   --bg-from:#111827;   /* gray-900 */
