@@ -196,7 +196,12 @@
     if (!a) return;
     const href = a.getAttribute('href');
     if (href && (href.indexOf('login.html') !== -1 || href.indexOf('signup.html') !== -1)) {
-      localStorage.setItem('dann_prevPage', location.pathname.split('/').pop());
+      const current = localStorage.getItem('dann_prevPage');
+      const here    = location.pathname.split('/').pop();
+      // Only store if not set, or if set to an auth page (login/signup)
+      if (!current || current === 'login.html' || current === 'signup.html') {
+        localStorage.setItem('dann_prevPage', here);
+      }
     }
   });
 
