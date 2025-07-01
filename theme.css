@@ -9,6 +9,8 @@
   --dropdown-bg:#ffffff;
   --footer-bg:#ffffff;
   --footer-text:#6b7280;
+  --input-text: #111827;
+  --placeholder-text: #6b7280;
 }
 [data-theme="dark"] {
   --bg-from:#111827;   /* gray-900 */
@@ -25,6 +27,54 @@
   /* Input enhancements for dark mode */
   --input-text: #f9fafb;
   --placeholder-text: #9ca3af;
+}
+
+/* ORANGE / PINK THEME */
+[data-theme="orangePink"] {
+  --bg-from:#ffedd5;      /* orange-100 */
+  --bg-via:#ffe4e6;       /* rose-100   */
+  --bg-to:  #fecaca;      /* red-200    */
+  --text:#7c2d12;         /* orange-900 */
+  --nav-bg:#fff7ed;       /* orange-50  */
+  --nav-text:#b45309;     /* orange-600 */
+  --nav-hover:#ec4899;    /* pink-500   */
+  --dropdown-bg:#fff7ed;
+  --footer-bg:#fff7ed;
+  --footer-text:#9a3412;
+  --input-text:#7c2d12;
+  --placeholder-text:#a16207;
+}
+
+/* PLUM / PINE THEME */
+[data-theme="plumPine"] {
+  --bg-from:#f3e8ff;      /* violet-100 */
+  --bg-via:#d1fae5;       /* emerald-100 */
+  --bg-to:#ede9fe;        /* indigo-100 */
+  --text:#082f49;         /* slate-900 */
+  --nav-bg:#f3e8ff;
+  --nav-text:#581c87;     /* purple-800 */
+  --nav-hover:#166534;    /* green-700 */
+  --dropdown-bg:#f3e8ff;
+  --footer-bg:#f3e8ff;
+  --footer-text:#4c1d95;
+  --input-text:#082f49;
+  --placeholder-text:#475569;
+}
+
+/* YELLOW / NAVY THEME */
+[data-theme="yellowNavy"] {
+  --bg-from:#fefce8;      /* yellow-50 */
+  --bg-via:#fef08a;       /* yellow-300 */
+  --bg-to:#dbeafe;        /* blue-100  */
+  --text:#1e3a8a;         /* blue-800 */
+  --nav-bg:#ffffff;
+  --nav-text:#ca8a04;     /* yellow-600 */
+  --nav-hover:#1e40af;    /* blue-800 */
+  --dropdown-bg:#ffffff;
+  --footer-bg:#ffffff;
+  --footer-text:#475569;
+  --input-text:#1e3a8a;
+  --placeholder-text:#6b7280;
 }
 
 /* ...existing rules... */

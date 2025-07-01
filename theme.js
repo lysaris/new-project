@@ -3,9 +3,12 @@
   const root = document.documentElement;
   const toggleBtnId = "theme-toggle";
 
+  // Multi-theme support
+  const THEMES = ["light", "dark", "orangePink", "plumPine", "yellowNavy"];
+
   function getPreferredTheme() {
     const stored = localStorage.getItem(THEME_KEY);
-    if (stored === "light" || stored === "dark") {
+    if (THEMES.includes(stored)) {
       return stored;
     }
     const mql = window.matchMedia("(prefers-color-scheme: dark)");
@@ -21,17 +24,15 @@
   function updateToggleIcon(theme) {
     const btn = document.getElementById(toggleBtnId);
     if (!btn) return;
-    // Icon logic: show moon for light (prompting dark), sun for dark (prompting light)
-    btn.innerHTML = theme === "dark"
-      ? '<i class="fa-solid fa-sun"></i>'
-      : '<i class="fa-solid fa-moon"></i>';
-    btn.setAttribute("aria-label",
-      theme === "dark" ? "Switch to light mode" : "Switch to dark mode");
+    // Unified palette icon for all themes, show current theme in aria-label
+    btn.innerHTML = '<i class="fa-solid fa-circle-half-stroke"></i>';
+    btn.setAttribute("aria-label", "Change theme (current: " + theme + ")");
   }
 
   window.toggleTheme = function() {
-    const current = root.dataset.theme === "dark" ? "dark" : "light";
-    const next = current === "dark" ? "light" : "dark";
+    const current = root.dataset.theme || "light";
+    const idx = THEMES.indexOf(current);
+    const next = THEMES[(idx + 1) % THEMES.length];
     setTheme(next);
   };
 
@@ -42,7 +43,7 @@
     const btn = document.getElementById(toggleBtnId);
     if (btn) {
       btn.addEventListener("click", window.toggleTheme);
-      updateToggleIcon(initial); // in case theme was set before DOMContentLoaded
+      updateToggleIcon(initial);
     }
   });
 
