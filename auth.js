@@ -200,7 +200,11 @@
     }
   });
 
-  // Listen to user state and update nav, robust to DOMContentLoaded timing
+  // Expose global
+  const DANNAuth = { signUp, signIn, signOut, currentUser, onChange };
+  window.DANNAuth = DANNAuth;
+
+  // Listen to user state and update nav, robust to DOMContentLoaded timing.
   (function initNav() {
     const run = () => DANNAuth.onChange(updateNav);
     if (document.readyState === 'loading') {
@@ -209,8 +213,4 @@
       run();
     }
   })();
-
-  // Expose global
-  const DANNAuth = { signUp, signIn, signOut, currentUser, onChange };
-  window.DANNAuth = DANNAuth;
 })();
