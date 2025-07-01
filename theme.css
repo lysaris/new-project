@@ -21,6 +21,24 @@
   --dropdown-bg:#1f2937;
   --footer-bg:#1f2937;
   --footer-text:#9ca3af;
+
+  /* Input enhancements for dark mode */
+  --input-text: #f9fafb;
+  --placeholder-text: #9ca3af;
+}
+
+/* ...existing rules... */
+
+/* Improve input and placeholder text visibility in dark mode */
+[data-theme="dark"] input,
+[data-theme="dark"] textarea,
+[data-theme="dark"] select {
+  color: var(--input-text) !important;
+}
+
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: var(--placeholder-text) !important;
 }
 
 /* Global element overrides so we don't have to edit every Tailwind class individually */
