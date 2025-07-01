@@ -25,7 +25,7 @@
 
 /* Global element overrides so we don't have to edit every Tailwind class individually */
 body {
-  background-image: linear-gradient(to bottom right,var(--bg-from),var(--bg-via),var(--bg-to));
+  background-image: linear-gradient(to bottom right,var(--bg-from),var(--bg-via),var(--bg-to)) !important;
   color: var(--text);
 }
 nav {
@@ -43,4 +43,38 @@ nav ul ul { /* dropdown menus */
 footer {
   background-color: var(--footer-bg) !important;
   color: var(--footer-text) !important;
+}
+
+/* Utility overrides for full-theme switch */
+[data-theme="dark"] {
+  /* Background utilities */
+  .bg-white,
+  .bg-gray-50,
+  .bg-gray-100,
+  .bg-blue-50,
+  .bg-orange-50 {
+    background-color: var(--nav-bg) !important;
+  }
+
+  /* Border utilities */
+  .border,
+  .border-gray-100,
+  .border-gray-200 {
+    border-color: var(--nav-bg) !important;
+  }
+
+  /* Text utilities */
+  .text-gray-900,
+  .text-gray-800,
+  .text-gray-700,
+  .text-gray-600,
+  .text-gray-500,
+  .text-gray-400 {
+    color: var(--text) !important;
+  }
+
+  /* Muted foreground / accent (hover) */
+  .hover\:text-orange-600:hover {
+    color: var(--nav-hover) !important;
+  }
 }
