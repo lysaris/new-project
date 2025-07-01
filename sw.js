@@ -3,6 +3,8 @@ const PRECACHE = [
   '/', 'index.html', 'theme.css', 'theme.js', 'auth.js', 'dashboard.js', 'dashboard.html',
   'login.html', 'signup.html', 'about.html', 'contact.html', 'portfolio.html', 'donate.html',
   'biography.html', 'creator.html', 'cosine.html', 'location.html',
+  // Pomodoro and features (data is always in localStorage, but for offline code robustness)
+  // No separate file, but ensure dashboard.js, dashboard.html, auth.js are all included
   'https://cdn.tailwindcss.com', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css',
   'https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap'
 ];
