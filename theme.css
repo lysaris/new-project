@@ -101,3 +101,13 @@ footer {
 [data-theme="dark"] nav a {
   color: var(--nav-text) !important;
 }
+
+/* Auth pages: ensure dark input text on white fields */
+[data-theme="dark"] #loginForm input,
+[data-theme="dark"] #signupForm input {
+  color: #111827 !important;          /* gray-900 / black-ish */
+}
+[data-theme="dark"] #loginForm input::placeholder,
+[data-theme="dark"] #signupForm input::placeholder {
+  color: #6b7280 !important;          /* gray-500 */
+}
