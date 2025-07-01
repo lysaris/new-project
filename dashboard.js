@@ -116,6 +116,10 @@
       e.preventDefault();
       const txt = (todoInput.value || "").trim();
       if (!txt) return;
+      if (txt.length > 100) {
+        alert('Task text is too long (max 100 characters).');
+        return;
+      }
       todos.push({ id: Date.now(), text: txt, done: false });
       saveTodos(user.email, todos);
       todoInput.value = "";
@@ -162,8 +166,11 @@
               id = Date.now() + Math.floor(Math.random()*100000);
               while (byId[id]) id++;
             }
+            // Text validation: trim, slice to 100 chars, skip empty
+            const text = String(t.text).trim().slice(0, 100);
+            if (!text) return;
             byId[id] = true;
-            todos.push({id, text: String(t.text), done: !!t.done});
+            todos.push({id, text, done: !!t.done});
             added++;
           });
           saveTodos(user.email, todos);
@@ -198,6 +205,11 @@
     };
     let timerInterval = null;
 
+    // Helper to show/hide buttons
+    function setVisible(btn, show) {
+      btn.classList.toggle('hidden', !show);
+    }
+
     function updatePomodoroDisplay() {
       const now = Date.now();
       let tleft = pState.duration;
@@ -209,25 +221,19 @@
       const min = Math.floor(tleft / 60).toString().padStart(2, "0");
       const sec = (tleft % 60).toString().padStart(2, "0");
       document.getElementById("pomodoroTime").textContent = `${min}:${sec}`;
-      // Button state logic (use dynamic duration)
-      if (!pState.running && (!pState.start || tleft === pState.duration)) {
-        pStart.disabled = false;
-        pPause.disabled = true;
-        pReset.disabled = true;
-      } else if (pState.running) {
-        pStart.disabled = true;
-        pPause.disabled = false;
-        pReset.disabled = false;
-      } else if (!pState.running && pState.pausedAt) {
-        pStart.classList.add("hidden");
-        pPause.classList.add("hidden");
-        pResume.classList.remove("hidden");
-        pReset.classList.remove("hidden");
-      } else {
-        pStart.disabled = false;
-        pPause.disabled = true;
-        pReset.disabled = false;
-      }
+      // Explicitly set Pomodoro button visibility/disabled state for all states
+      const notStarted = !pState.start;
+      const running    = pState.running;
+      const paused     = !running && !!pState.pausedAt;
+      setVisible(pStart,  notStarted);
+      setVisible(pPause,  running);
+      setVisible(pResume, paused);
+      setVisible(pReset,  running || paused || (tleft !== pState.duration));
+
+      pStart.disabled  = !notStarted;
+      pPause.disabled  = !running;
+      pResume.disabled = !paused;
+      pReset.disabled  = !(running || paused);
     }
     function clearPomodoroInterval() {
       if (timerInterval) {
