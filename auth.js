@@ -216,8 +216,60 @@
     return false;
   }
 
+  // --- Account Utilities ---
+
+  // Change password for current user
+  // Usage: await DANNAuth.changePassword({oldPassword, newPassword})
+  async function changePassword({oldPassword, newPassword}) {
+    const user = getCurrentUser();
+    if (!user) throw new Error("Not signed in.");
+    let users = getUsers();
+    const idx = users.findIndex(u => norm(u.email) === norm(user.email));
+    if (idx === -1) throw new Error("User not found.");
+    const rec = users[idx];
+    // Verify old password
+    const oldHash = await hashPassword(rec.salt, oldPassword);
+    if (oldHash !== rec.hash) throw new Error("Old password incorrect.");
+    // Validate new password
+    if (typeof newPassword !== "string" || newPassword.length < 4 || newPassword.length > 32) {
+      throw new Error("Password must be 4-32 characters.");
+    }
+    // Generate new salt and hash
+    const salt = generateSalt();
+    const hash = await hashPassword(salt, newPassword);
+    users[idx] = { ...rec, salt, hash };
+    saveUsers(users);
+    // No sign out, stays logged in
+    return true;
+  }
+
+  // Delete current user account (removes auth, data, signs out)
+  function deleteAccount() {
+    const user = getCurrentUser();
+    if (!user) throw new Error("Not signed in.");
+    let users = getUsers();
+    const idx = users.findIndex(u => norm(u.email) === norm(user.email));
+    if (idx === -1) throw new Error("User not found.");
+    users.splice(idx, 1);
+    saveUsers(users);
+
+    // Remove per-user storage
+    try {
+      localStorage.removeItem("dann_" + encodeURIComponent(user.email) + "_todos");
+      localStorage.removeItem("dann_" + encodeURIComponent(user.email) + "_pomodoro");
+    } catch {}
+    setCurrentUser(null);
+    signOut();
+    // No need to reload or redirect here (API only)
+    return true;
+  }
+
   // Expose global
-  const DANNAuth = { signUp, signIn, signOut, currentUser, onChange, redirectIfAuthenticated, redirectIfNotAuthenticated };
+  const DANNAuth = {
+    signUp, signIn, signOut, currentUser, onChange,
+    redirectIfAuthenticated, redirectIfNotAuthenticated,
+    changePassword, deleteAccount
+  };
   window.DANNAuth = DANNAuth;
 
   // Listen to user state and update nav, robust to DOMContentLoaded timing.
