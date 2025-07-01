@@ -160,12 +160,12 @@
   <script src="auth.js"></script>
   <script src="theme.js" defer></script>
   <script>
-    // UX tweak: If already signed in, change "Log in here" link to dashboard
+    // UX tweak: If already signed in, change "Log in here" link to open chatroom (portfolio.html)
     document.addEventListener('DOMContentLoaded', ()=>{
       const link = document.querySelector('#loginRedirect');
       if (window.DANNAuth && DANNAuth.currentUser()) {
-        link.textContent = 'Go to Dashboard';
-        link.href = 'dashboard.html';
+        link.textContent = 'Go to Open Chatroom';
+        link.href = 'portfolio.html';
       }
     });
   </script>
