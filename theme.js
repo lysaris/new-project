@@ -45,4 +45,9 @@
       updateToggleIcon(initial); // in case theme was set before DOMContentLoaded
     }
   });
+
+  // --- Service Worker registration for PWA/offline ---
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  }
 })();
