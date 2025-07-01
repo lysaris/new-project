@@ -205,9 +205,19 @@
     }
   });
 
+  // --- Loop guard helper ---
+  function inLoop(key, limitMs = 2000) {
+    const now = Date.now();
+    const last = parseInt(sessionStorage.getItem(key) || 0, 10);
+    if (now - last < limitMs) return true;
+    sessionStorage.setItem(key, now);
+    return false;
+  }
+
   // --- Auth gate helpers ---
   function redirectIfAuthenticated(target = 'dashboard.html') {
     if (currentUser()) {
+      if (inLoop('dann_authLoop')) return false; // break potential loop
       window.location.replace(target);
       return true;
     }
@@ -215,6 +225,7 @@
   }
   function redirectIfNotAuthenticated(target = 'login.html') {
     if (!currentUser()) {
+      if (inLoop('dann_unauthLoop')) return true;
       window.location.replace(target);
       return true;
     }

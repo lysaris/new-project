@@ -144,7 +144,7 @@
       </form>
       <p class="text-center text-gray-600 mt-6">
         Already have an account?
-        <a href="login.html" class="text-orange-600 font-semibold hover:underline">Log in here.</a>
+        <a id="loginRedirect" href="login.html" class="text-orange-600 font-semibold hover:underline">Log in here.</a>
       </p>
     </div>
   </section>
@@ -159,6 +159,16 @@
   <!-- Sign Up JS -->
   <script src="auth.js"></script>
   <script src="theme.js" defer></script>
+  <script>
+    // UX tweak: If already signed in, change "Log in here" link to dashboard
+    document.addEventListener('DOMContentLoaded', ()=>{
+      const link = document.querySelector('#loginRedirect');
+      if (window.DANNAuth && DANNAuth.currentUser()) {
+        link.textContent = 'Go to Dashboard';
+        link.href = 'dashboard.html';
+      }
+    });
+  </script>
   <script>
     // Password visibility utility (press-and-hold)
     (function () {
