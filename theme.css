@@ -78,3 +78,8 @@ footer {
     color: var(--nav-hover) !important;
   }
 }
+
+/* Re-assert nav link colour after generic overrides */
+[data-theme="dark"] nav a {
+  color: var(--nav-text) !important;
+}
