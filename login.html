@@ -153,6 +153,14 @@
   <script src="auth.js"></script>
   <script src="theme.js" defer></script>
   <script>
+    // Early redirect: If user already logged in, go to dashboard
+    (function () {
+      const current = window.DANNAuth && DANNAuth.currentUser && DANNAuth.currentUser();
+      if (current) {
+        window.location.replace('dashboard.html');
+      }
+    })();
+
     // Password visibility utility (press-and-hold)
     (function () {
       const loginPasswordInput = document.getElementById('loginPassword');

@@ -200,10 +200,15 @@
     }
   });
 
-  // Listen to user state and update nav
-  window.addEventListener('DOMContentLoaded', function () {
-    DANNAuth.onChange(updateNav);
-  });
+  // Listen to user state and update nav, robust to DOMContentLoaded timing
+  (function initNav() {
+    const run = () => DANNAuth.onChange(updateNav);
+    if (document.readyState === 'loading') {
+      window.addEventListener('DOMContentLoaded', run, { once: true });
+    } else {
+      run();
+    }
+  })();
 
   // Expose global
   const DANNAuth = { signUp, signIn, signOut, currentUser, onChange };
