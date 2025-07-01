@@ -187,6 +187,7 @@
     const pPause = document.getElementById("pomodoroPause");
     const pResume = document.getElementById("pomodoroResume");
     const pReset = document.getElementById("pomodoroReset");
+    const pEdit  = document.getElementById("pomodoroEdit");
     const POMODORO_DEFAULT = 1500; // 25 min in seconds
 
     let pState = loadPomodoro(user.email) || {
@@ -198,33 +199,34 @@
     let timerInterval = null;
 
     function updatePomodoroDisplay() {
+      const now = Date.now();
       let tleft = pState.duration;
       if (pState.running && pState.start) {
-        const now = Date.now();
-        tleft = Math.max(0, Math.round(pState.duration - (now - pState.start) / 1000));
-      } else if (!pState.running && pState.pausedAt && pState.start) {
-        tleft = Math.max(0, Math.round(pState.duration - (pState.pausedAt - pState.start) / 1000));
+        tleft = Math.max(0, Math.round((pState.start + pState.duration * 1000 - now) / 1000));
+      } else if (pState.pausedAt && pState.start) {
+        tleft = Math.max(0, Math.round((pState.pausedAt - pState.start) / 1000));
       }
-      const min = Math.floor(tleft/60);
-      const sec = String(tleft%60).padStart(2,"0");
-      pDisplay.textContent = `${min}:${sec}`;
-      // Toggle buttons
-      if (!pState.running && (!pState.start || tleft === POMODORO_DEFAULT)) {
-        // Not started or reset
-        pStart.classList.remove("hidden");
-        pPause.classList.add("hidden");
-        pResume.classList.add("hidden");
-        pReset.classList.remove("hidden");
+      const min = Math.floor(tleft / 60).toString().padStart(2, "0");
+      const sec = (tleft % 60).toString().padStart(2, "0");
+      document.getElementById("pomodoroTime").textContent = `${min}:${sec}`;
+      // Button state logic (use dynamic duration)
+      if (!pState.running && (!pState.start || tleft === pState.duration)) {
+        pStart.disabled = false;
+        pPause.disabled = true;
+        pReset.disabled = true;
       } else if (pState.running) {
-        pStart.classList.add("hidden");
-        pPause.classList.remove("hidden");
-        pResume.classList.add("hidden");
-        pReset.classList.remove("hidden");
+        pStart.disabled = true;
+        pPause.disabled = false;
+        pReset.disabled = false;
       } else if (!pState.running && pState.pausedAt) {
         pStart.classList.add("hidden");
         pPause.classList.add("hidden");
         pResume.classList.remove("hidden");
         pReset.classList.remove("hidden");
+      } else {
+        pStart.disabled = false;
+        pPause.disabled = true;
+        pReset.disabled = false;
       }
     }
     function clearPomodoroInterval() {
@@ -242,13 +244,15 @@
           tleft = Math.max(0, Math.round(pState.duration - (now - pState.start) / 1000));
         }
         if (tleft <= 0) {
+          // Preserve chosen duration
+          const dur = pState.duration;
           clearPomodoroInterval();
           savePomodoro(user.email, null);
           pState = {
             start: null,
             pausedAt: null,
             running: false,
-            duration: POMODORO_DEFAULT
+            duration: dur
           };
           updatePomodoroDisplay();
           alert("Pomodoro complete! Take a break.");
@@ -286,15 +290,37 @@
       startPomodoroTimer();
     });
     pReset.addEventListener("click", function() {
+      const dur = pState.duration;
       pState = {
         start: null,
         pausedAt: null,
         running: false,
-        duration: POMODORO_DEFAULT
+        duration: dur
       };
-      savePomodoro(user.email, null);
+      savePomodoro(user.email, pState);
       updatePomodoroDisplay();
       clearPomodoroInterval();
+    });
+
+    // Pomodoro Edit handler
+    pEdit.addEventListener("click", function() {
+      let minutes = prompt("Set Pomodoro duration (minutes, 1–180):", Math.round(pState.duration/60));
+      if (minutes === null) return;
+      minutes = parseInt(minutes.trim(), 10);
+      if (isNaN(minutes) || minutes < 1 || minutes > 180) {
+        alert("Invalid number (1–180).");
+        return;
+      }
+      if (pState.running && !confirm("Timer is running. Changing duration will reset it. Continue?")) return;
+      pState = {
+        start: null,
+        pausedAt: null,
+        running: false,
+        duration: minutes * 60
+      };
+      savePomodoro(user.email, pState);
+      clearPomodoroInterval();
+      updatePomodoroDisplay();
     });
 
     // Load on entry
