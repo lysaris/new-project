@@ -152,7 +152,7 @@
 
   // NAV BAR SWAP ("Sign Up" ↔ username, acts as Log Out)
   function updateNav(user) {
-    const navLink = document.querySelector('nav a[href="signup.html"]');
+    const navLink = document.querySelector('nav a[href="signup.html"], nav a[href="#"]');
     if (!navLink) return;
     if (user) {
       navLink.textContent = user.username || user.email || "Account";
@@ -169,6 +169,24 @@
     } else {
       navLink.textContent = 'Sign Up';
       navLink.href = 'signup.html';
+    }
+
+    // ---- Dashboard nav link insert/remove logic ----
+    const ul = document.querySelector('nav ul');
+    let dash = document.getElementById('dashboardNav');
+    if (user) {
+      if (!dash && ul) {
+        dash = document.createElement('li');
+        dash.id = 'dashboardNav';
+        const a = document.createElement('a');
+        a.href = 'dashboard.html';
+        a.textContent = 'Dashboard';
+        a.className = 'hover:text-orange-600';
+        dash.appendChild(a);
+        ul.appendChild(dash);
+      }
+    } else {
+      if (dash) dash.remove();
     }
   }
 
