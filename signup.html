@@ -191,8 +191,8 @@
     // ------------- SIGN-UP LOGIC (Firebase) -------------
     const signupForm = document.getElementById('signupForm');
     signupForm.addEventListener('submit', async function (e) {
-      if (!this.checkValidity()) return;
       e.preventDefault();
+      if (!this.checkValidity()) return;
       const email = document.getElementById('email').value.trim();
       const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value;

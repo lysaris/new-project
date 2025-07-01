@@ -200,8 +200,24 @@
     }
   });
 
+  // --- Auth gate helpers ---
+  function redirectIfAuthenticated(target = 'dashboard.html') {
+    if (currentUser()) {
+      window.location.replace(target);
+      return true;
+    }
+    return false;
+  }
+  function redirectIfNotAuthenticated(target = 'login.html') {
+    if (!currentUser()) {
+      window.location.replace(target);
+      return true;
+    }
+    return false;
+  }
+
   // Expose global
-  const DANNAuth = { signUp, signIn, signOut, currentUser, onChange };
+  const DANNAuth = { signUp, signIn, signOut, currentUser, onChange, redirectIfAuthenticated, redirectIfNotAuthenticated };
   window.DANNAuth = DANNAuth;
 
   // Listen to user state and update nav, robust to DOMContentLoaded timing.

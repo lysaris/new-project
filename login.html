@@ -151,16 +151,12 @@
 
   <!-- Log In JS -->
   <script src="auth.js"></script>
+  <!-- Centralized redirect: If user already logged in, go to dashboard -->
+  <script>
+    window.DANNAuth && DANNAuth.redirectIfAuthenticated();
+  </script>
   <script src="theme.js" defer></script>
   <script>
-    // Early redirect: If user already logged in, go to dashboard
-    (function () {
-      const current = window.DANNAuth && DANNAuth.currentUser && DANNAuth.currentUser();
-      if (current) {
-        window.location.replace('dashboard.html');
-      }
-    })();
-
     // Password visibility utility (press-and-hold)
     (function () {
       const loginPasswordInput = document.getElementById('loginPassword');
@@ -172,11 +168,11 @@
         loginPasswordInput.type = visible ? 'text' : 'password';
         loginEyeIcon.innerHTML = visible
           ? `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-               d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.956 9.956 0 012.19-3.308M6.11 6.11A9.956 9.956 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.96 9.96 0 01-4.21 5.442M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+               d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.956 9.956 0 012.19-3.308M6.11 6.11A9.956 9.956 0 0112 5c4.478 0 8.268-2.943 9.542 7a9.96 9.96 0 01-4.21 5.442M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                d="M3 3l18 18"/>`
           : `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>`;
+                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268-2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>`;
       }
       function show() { setPasswordVisible(true); }
       function hide() { setPasswordVisible(false); }
@@ -189,11 +185,11 @@
       toggleLoginPassword.addEventListener('touchcancel', e => { if (eyeActive) { hide(); eyeActive = false; } });
     })();
 
-    // ------------- LOGIN LOGIC (Firebase) -------------
+    // ------------- LOGIN LOGIC (Local) -------------
     const loginForm = document.getElementById('loginForm');
     loginForm.addEventListener('submit', async function (e) {
-      if (!this.checkValidity()) return;
       e.preventDefault();
+      if (!this.checkValidity()) return;
       const identifier = document.getElementById('identifier').value.trim();
       const password = document.getElementById('loginPassword').value;
       const remember = document.getElementById('rememberCb').checked;

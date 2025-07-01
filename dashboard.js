@@ -1,18 +1,14 @@
 (function() {
   // Helpers
-  function getCurrentUser() {
-    return window.DANNAuth && DANNAuth.currentUser && DANNAuth.currentUser();
-  }
   function todoKey(email) {
     return "dann_" + encodeURIComponent(email) + "_todos";
   }
   function loadTodos(email) {
     try {
       const raw = localStorage.getItem(todoKey(email));
-      return Array.isArray(JSON.parse(raw)) ? JSON.parse(raw) : [];
-    } catch {
-      return [];
-    }
+      const arr = raw ? JSON.parse(raw) : [];
+      return Array.isArray(arr) ? arr : [];
+    } catch { return []; }
   }
   function saveTodos(email, todos) {
     localStorage.setItem(todoKey(email), JSON.stringify(todos));
@@ -20,8 +16,8 @@
 
   // DOM
   document.addEventListener("DOMContentLoaded", function() {
-    const user = getCurrentUser();
-    if (!user) { location.replace("login.html"); return; }
+    if (window.DANNAuth && DANNAuth.redirectIfNotAuthenticated()) return;
+    const user = DANNAuth.currentUser();
     const greeting = document.getElementById("dashboardGreeting");
     greeting.textContent = "Welcome, " + (user.username || user.email || "user") + "!";
 
