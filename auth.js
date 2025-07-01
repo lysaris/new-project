@@ -280,6 +280,13 @@
     return true;
   }
 
+  // --- Cross-tab auth state sync: notify onChange handlers if CURR_KEY changes in another tab ---
+  window.addEventListener('storage', function (e) {
+    if (e.key === CURR_KEY) {
+      changeHandlers.forEach(h => { try { h(DANNAuth.currentUser()); } catch {} });
+    }
+  });
+
   // Expose global
   const DANNAuth = {
     signUp, signIn, signOut, currentUser, onChange,

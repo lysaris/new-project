@@ -25,10 +25,20 @@ document.addEventListener("DOMContentLoaded", () => {
   const loginNotice = document.getElementById("chatLoginNotice");
 
   let user = (window.DANNAuth && DANNAuth.currentUser()) || null;
-  if (!user) {
-    form.classList.add("hidden");
-    loginNotice.classList.remove("hidden");
+
+  function updateAuthUI(u) {
+    if (u) {
+      form.classList.remove("hidden");
+      loginNotice.classList.add("hidden");
+      form.elements["chatInput"].disabled = false;
+    } else {
+      form.classList.add("hidden");
+      loginNotice.classList.remove("hidden");
+      form.elements["chatInput"].disabled = true;
+    }
   }
+
+  updateAuthUI(user);
 
   function render() {
     const msgs = loadMsgs();
@@ -43,22 +53,30 @@ document.addEventListener("DOMContentLoaded", () => {
   // Listen to storage change (other tabs)
   window.addEventListener("storage", e => { if (e.key === CHAT_KEY) render(); });
 
-  if (user) {
-    form.addEventListener("submit", e => {
-      e.preventDefault();
-      const txt = (input.value || "").trim();
-      if (!txt) return;
-      const msgs = loadMsgs();
-      msgs.push({
-        id: Date.now(),
-        u: user.username || user.email || "Anon",
-        txt: txt.slice(0, 500),
-        t: Date.now()
-      });
-      if (msgs.length > 500) msgs.splice(0, msgs.length - 500); // keep last 500
-      saveMsgs(msgs);
-      input.value = "";
-      render();
+  // React to auth changes in real time
+  if (window.DANNAuth && typeof DANNAuth.onChange === "function") {
+    DANNAuth.onChange(u => {
+      user = u;
+      updateAuthUI(user);
     });
   }
+
+  // Attach submit handler always, but only process if user
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+    if (!user) return;
+    const txt = (input.value || "").trim();
+    if (!txt) return;
+    const msgs = loadMsgs();
+    msgs.push({
+      id: Date.now(),
+      u: user.username || user.email || "Anon",
+      txt: txt.slice(0, 500),
+      t: Date.now()
+    });
+    if (msgs.length > 500) msgs.splice(0, msgs.length - 500); // keep last 500
+    saveMsgs(msgs);
+    input.value = "";
+    render();
+  });
 });
