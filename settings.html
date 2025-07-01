@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Settings – DANN</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="theme.css">
+  <style>
+    html, body { font-family: 'Poppins', sans-serif; }
+    .gradient-text {
+      background: linear-gradient(90deg, #001F54 0%, #FF7F11 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-white to-orange-50 text-gray-900 min-h-screen">
+  <!-- Navigation (settings link auto-injected) -->
+  <nav class="bg-white shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+      <a href="index.html" class="text-2xl font-bold gradient-text">DANN</a>
+      <div class="flex items-center space-x-6 font-semibold text-gray-600">
+        <ul class="flex space-x-6">
+          <li><a href="index.html" class="hover:text-orange-600">Home</a></li>
+          <li><a href="contact.html" class="hover:text-orange-600">Contact</a></li>
+          <li><a href="signup.html" class="hover:text-orange-600">Sign Up</a></li>
+        </ul>
+        <button id="theme-toggle" class="text-xl hover:text-orange-600"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Settings Card -->
+  <section class="min-h-screen flex flex-col items-center justify-center py-14">
+    <div class="bg-white rounded-2xl shadow-lg max-w-lg w-full p-8 mx-2">
+      <h2 class="text-3xl font-bold mb-6 gradient-text text-center">Settings</h2>
+
+      <!-- Theme selection -->
+      <fieldset class="mb-8">
+        <legend class="font-semibold mb-3">Theme</legend>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <label class="flex items-center space-x-2"><input type="radio" name="theme" value="light"/> <span>Light</span></label>
+          <label class="flex items-center space-x-2"><input type="radio" name="theme" value="dark"/> <span>Dark</span></label>
+          <label class="flex items-center space-x-2"><input type="radio" name="theme" value="orangePink"/> <span>Orange-Pink</span></label>
+          <label class="flex items-center space-x-2"><input type="radio" name="theme" value="plumPine"/> <span>Plum-Pine</span></label>
+          <label class="flex items-center space-x-2"><input type="radio" name="theme" value="yellowNavy"/> <span>Yellow-Navy</span></label>
+        </div>
+      </fieldset>
+
+      <!-- Font size selection -->
+      <fieldset class="mb-8">
+        <legend class="font-semibold mb-3">Font Size</legend>
+        <div class="flex space-x-5">
+          <label class="flex items-center space-x-2"><input type="radio" name="font" value="small"/> <span>Small</span></label>
+          <label class="flex items-center space-x-2"><input type="radio" name="font" value="default"/> <span>Default</span></label>
+          <label class="flex items-center space-x-2"><input type="radio" name="font" value="large"/> <span>Large</span></label>
+        </div>
+      </fieldset>
+
+      <button id="resetPrefs" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg font-semibold">Reset Preferences</button>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t mt-20">
+    <div class="max-w-6xl mx-auto px-4 py-8 text-center text-gray-500 text-sm">&copy; 2025 DANN. All rights reserved.</div>
+  </footer>
+
+  <script src="theme.js" defer></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Pre-select current settings
+      const currentTheme = document.documentElement.dataset.theme || 'light';
+      const currentFont  = document.documentElement.dataset.font || 'default';
+      const themeRadios = document.querySelectorAll('input[name="theme"]');
+      const fontRadios  = document.querySelectorAll('input[name="font"]');
+      themeRadios.forEach(r => { if (r.value === currentTheme) r.checked = true; });
+      fontRadios.forEach(r  => { if (r.value === currentFont)  r.checked = true; });
+
+      // Listeners
+      themeRadios.forEach(r => {
+        r.addEventListener('change', e => {
+          window.applyTheme(e.target.value);
+        });
+      });
+      fontRadios.forEach(r => {
+        r.addEventListener('change', e => {
+          window.applyFont(e.target.value);
+        });
+      });
+
+      // Reset button
+      document.getElementById('resetPrefs').addEventListener('click', function() {
+        if (!confirm('Reset all appearance preferences?')) return;
+        localStorage.removeItem('theme');
+        localStorage.removeItem('fontSize');
+        location.reload();
+      });
+    });
+  </script>
+</body>
+</html>
