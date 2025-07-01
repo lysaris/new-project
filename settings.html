@@ -98,9 +98,9 @@
       // Reset button
       document.getElementById('resetPrefs').addEventListener('click', function() {
         if (!confirm('Reset all appearance preferences?')) return;
-        localStorage.removeItem('theme');
-        localStorage.removeItem('fontSize');
-        location.reload();
+        if (window.resetAppearancePrefs) {
+          window.resetAppearancePrefs();
+        }
       });
     });
   </script>
